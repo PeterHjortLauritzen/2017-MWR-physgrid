@@ -119,6 +119,19 @@
 %% the higher level heading, use the star form: 
 %%
 \section{Introduction}
+\begin{itemize}
+\item \cite{LH1997MWR}: Believable scales
+\item Discuss \cite{W2014PTRSL}: spectral truncation and physics (physical) grid (see page 10; conclusions)
+\item \cite{T1999T}: keep physics scales constant with dynamical core refinement in spectral transform model
+\begin{itemize}
+\item aid the convergence of the Hadley circulation
+\item does not convergenge if the physics grid resolution is not held constant
+\item parameterizations at the coarser grid do not include their own forcings from the finer scale, which appears to be contradictory to the purpose of parameterizations in the first place.
+\end{itemize}
+\item \cite{M2009T}: vertical refinement of physics grid (improvement)
+\item see complete list of possibly relevant papers in: {\verb+http://pdc.cicese.mx/program_day_by_day.html+}
+\end{itemize}
+
 % \subsection*{subsection}
 % text...
 \section{Methods}
@@ -168,7 +181,11 @@ $ regular latitude-longitude grid for plotting.}\label{fig:remap-slotted-cylinde
 % \section{Section title}
 
 %%%
-% \section{First primary heading}
+\section{Results}
+\begin{figure}[t]
+\noindent\includegraphics[width=19pc,angle=0]{figs/zonal_time_avg_2d_fields.pdf}\\
+\caption{Zonal-time average (a) surface pressure $PS$, (b) total precipitation rate $PRECT$, (c) total cloud fraction $CLDTOT$, and (d) albedo as a function of latitude (from Equator to $80^\circ$N) for the different model configurations. The data has been averaged over a period of 30 months and mapped to a $1.5^\circ$$\times$$1.5^\circ$ regular latitude-longitude grid for analysis.}
+\end{figure}
 
 % \subsection{First secondary heading}
 
@@ -218,8 +235,8 @@ Start acknowledgments here.
 % REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Make your BibTeX bibliography by using these commands:
-% \bibliographystyle{ametsoc2014}
-% \bibliography{references}
+\bibliographystyle{ametsoc2014}
+\bibliography{bib}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
