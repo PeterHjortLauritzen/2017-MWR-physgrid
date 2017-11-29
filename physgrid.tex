@@ -180,9 +180,11 @@ Integrating basis functions over control volumes may be beneficial in reducing t
 
 %In the context of spectral transform model \citet{TELA:TELA0009} held the physics forcing scale fixed while refining the horizontal resolution of the dynamical core. In the context of microphysics \citet{JGRD:JGRD50711} did a scale separation and \citet{TELA:TELA394} separated the vertical grids. While \citet{LH1997MWR} and \citet{TELA:TELA0009} separated scales truncation of the the wave transform, we here separate scales through integrating basis functions over control volumes and , contrary to \citet{JGRD:JGRD50711}, all of the physical parameterization computations are performed on the physgrid. We focus on horizontal separation of scales here.
 
-{\color{red}{It is the purpose of this paper to formulate the CAM-SE-physgrid version in which we separate physics and dynamics grids as illustrated in one dimension above. We show simulations from Held-Suarez .... CAM5 aquaplanet. ...}}
+It is the purpose of this paper to document the design of CAM-SE with an approximately isotropic physics grid (CAM-SE-PG) in which we separate physics and dynamics grids as illustrated in one dimension above. The mapping procedures used in CAM-SE-PG are presented in Section 2. Idealized model configurations with and without topography are presented in Section 3, illustrating the marked reduction in grid imprinting in CAM-SE-PG compared with the default CAM-SE. Section 4 contains a discussion of results and concluding remarks. 
 
+\section{Results}
 
+The CAM aqua-planet reference configuration (Neale and Hoskins 2001; Medeiros et al 2016) consists of an ocean covered planet in a perpetual equinox, with fixed, zonally symmetric SST temperatures that share a resemblance of present day Earth. The aqua-planet configuration illustrates the grid imprinting of
 
 % \subsection*{subsection}
 % text...
