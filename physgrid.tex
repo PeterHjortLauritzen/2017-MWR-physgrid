@@ -145,8 +145,7 @@ Traditionally the state of the atmosphere passed to the sub-grid-scale parameter
 
 \begin{figure}[t]
 \noindent\includegraphics[width=19pc,angle=0]{figs/pdf_omg_gll_1panel.pdf}\\
-\caption{PDF of instantaneous $\omega$ (1 month) classifying the points into small, medium, and large volumes/GLL 
-weights. Note the consistent higher $omega$ values for smaller areas compared to $\omega$ associated with larger volumes (which makes sense). The question is how parameterizations respond to that.}\label{fig:omega-se-volumes}
+\caption{Probability density distribution of instantaneous upward $\omega$, conditionally sampled based on interior, edge and corner node location. Figure is constructed from 1 year of six hourly data, +/- 10 degrees from the equator, and at all vertical levels. Note the consistent higher $omega$ values for interior nodes, compared to $\omega$ associated with buondary nodes. The question is then, whether the in-element bias in solution commutes through the physical parameterizations.}\label{fig:omega-se-volumes}
 \end{figure}
 
 Parameterizations use the state of the atmosphere from the dynamical core as the large-scale state for computing sub-grid-scale processes. For example, the dynamical core state defines the large-scale environment in a mass-flux based convection scheme. One may think of the dynamical core state as the average state of the atmosphere over a control volume as inherent to finite-volume methods. For finite-difference methods the point value is thought of as representative for the atmospheric state in the vicinity of the point value and one can usually associate a volume with the grid-point. Hence the physics grid (the grid on which the state of the atmosphere is evaluated and passed to physics) and the dynamics grid (the grid the dynamical core uses) coincide. If we apply this concept to GLL quadrature values then a volume associated with the quadrature point should be defined. An example of that is shown on Figure \ref{fig:cv-grids} where control volumes have been defined around the quadrature points so that the spherical area of the control volumes exactly match the Gaussian weight multiplied by the metric term (these weights are used for integrating the basis functions over the elements and can therefore, in this context, be interpreted as areas). [{\color{red}{Mark: could we be mathematically more rigorous? perhaps an appendix describing the iterative algorithm?}}] This grid is used in the NCAR CESM (Community Earth System Model) coupler for passing states between ocean, atmosphere and land-ice components since the current remapping method is finite-volume based and therefore requires control volumes {\footnote{it is noted that methods exist that do not require control volumes for conservative interpolation \citep{UT2015MWR}}}. Hence the components `see' an irregular atmospheric grid. Similarly, the parameterizations in the atmosphere `see' a state that is anisotropically sampled in space \citep[see Figure 1 and 5 in ][]{KetAl2008JGR}. The effect of this grid anisotropy can be seen in moist simulations, such as aqua-planet experiments \citep{MWO2016JAMES,MWO2016JAMES}. Figure \ref{fig:omega-se-volumes} show a PDF of instantaneous upward vertical velocity $\omega$ for one year of an aqua-planet experiment using CAM-SE. The vertical velocity is classified by GLL weights pertaining to nodes lying on element corners ('corner nodes'), nodes along the element edges ('edge nodes') and nodes within the interior of an element ('interior nodes'). Consistently, the magnitude of $\omega$ is larger for smaller grid cell areas, due to the ability of smaller grid cells areas to support tighter horizontal gradients. [{\color{red}{The question is then how will the physics respond to this?}}]
@@ -182,9 +181,6 @@ Integrating basis functions over control volumes may be beneficial in reducing t
 
 It is the purpose of this paper to document the design of CAM-SE with an approximately isotropic physics grid (CAM-SE-PG) in which we separate physics and dynamics grids as illustrated in one dimension above. The mapping procedures used in CAM-SE-PG are presented in Section 2. Idealized model configurations with and without topography are presented in Section 3, illustrating the marked reduction in grid imprinting in CAM-SE-PG compared with the default CAM-SE. Section 4 contains a discussion of results and concluding remarks. 
 
-\section{Results}
-
-The CAM aqua-planet reference configuration (Neale and Hoskins 2001; Medeiros et al 2016) consists of an ocean covered planet in a perpetual equinox, with fixed, zonally symmetric SST temperatures that share a resemblance of present day Earth. The aqua-planet configuration illustrates the grid imprinting of
 
 % \subsection*{subsection}
 % text...
@@ -203,6 +199,23 @@ Here we focus on CAM-SE, however, in principle the methods apply to any element-
 \begin{figure}[t]
 \noindent\includegraphics[width=19pc,angle=0]{figs/zonal_time_avg_2d_fields.pdf}\\
 \caption{Zonal-time average (a) surface pressure $PS$, (b) total precipitation rate $PRECT$, (c) total cloud fraction $CLDTOT$, and (d) albedo as a function of latitude (from Equator to $80^\circ$N) for the different model configurations. The data has been averaged over a period of 30 months and mapped to a $1.5^\circ$$\times$$1.5^\circ$ regular latitude-longitude grid for analysis.}
+\end{figure}
+
+
+\section{Results}
+
+The CAM aqua-planet reference configuration (Neale and Hoskins 2001; Medeiros et al 2016) consists of an ocean covered planet in a perpetual equinox, with fixed, zonally symmetric SST temperatures that resemble the present day climatology. Two year long aqua-planet simulations are performed, using CAM-SE in the default configuration ('default'), and with the physics grid configuration ('physgrid'). A plot similar to Figure \ref{fig:omega-se-volumes} is constructed for the physgrid simulation, in which a probability density distribution of upward vertical pressure velocities in the deep tropics is conditionally sampled based on location within the element. In the physgrid configuration, we define the sampling based on a grid cell ID of 1-9, corresponding to the location of the grid cell within the element (Figure \ref{fig:omg_locations}). Through the use of the physics grid, it appears that the dynamical state is independent of location within the element, a marked improvement over the default configuration (Figure \ref{fig:omega-se-volumes}). Since the state is independent of in-element location, it follows that the physics forcing computed from the state should also be independent of in-element location. The low-level, mean and variance of the physics tendencies in the two simulations are shown in Figure \ref{fig:tendency_imprint}. The mean physics tendencies contains modest grid imprinting in the default configuration, while in the variance field, grid imprinting is both ubiquitous and unmistakable (Figure \ref{fig:tendency_imprint}). Through the use of the physics grid, the grid imprinting is all but eliminated from mean and variance of the physics tendencies (Figure \ref{fig:tendency_imprint}), as expected from Figure \ref{fig:omg_locations}.
+
+\begin{figure}[t]
+\noindent\includegraphics[width=19pc,angle=0]{figs/pdf_omg_physgrid.pdf}\\
+\caption{Similar to Figure~\ref{fig:omega-se-volumes}, but through conditionally sampling the state in an aqua-planet, based on the finite volume grid cell location within each element (1-9). Figure constructed from 1 year of 6-hourly data +/- 10 degrees from the equator, and at all vertical levels. Through the use of the physics grid, the state is now independent of in-element location.}
+\label{fig:omg_locations}
+\end{figure}
+
+\begin{figure}[t]
+\noindent\includegraphics[width=19pc,angle=0]{figs/QPC6_bar_skk.pdf}\\
+\caption{Mean (left) and variance (right) of the low level temperature tendencies from the physical parameterizations on the GLL grid, for CAM-SE ($ne30np4$, top row) and CAM-SE-CSLAM ($ne30pg3$, bottom row), in a pair of year-long aqua-planet simulations after \cite{MWO2016JAMES}. Grid imprinting is observed along the element boundaries in CAM-SE, but is absent from the CAM-SE-CSLAM simulation.}
+\label{fig:tendency_imprint}
 \end{figure}
 
 % \subsection{First secondary heading}
