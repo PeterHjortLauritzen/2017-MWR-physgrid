@@ -165,7 +165,14 @@ It is the purpose of this paper to document the design of CAM-SE with an approxi
 
 
 \section{Methods}
-Here we focus on CAM-SE, however, in principle the methods apply to any element-based high-order Galerkin model. The physics grid in CAM-SE is defined by sub-dividing each element using equi-angular gnomonic coordinate lines to define the sides of the physics grid control volumes. Note that the element boundaries are defined by equi-angular gnomonic grid lines. The notation $pg=3$ refers to the configuration where the elements are divided into $pg\times pg=3\times 3$ quasi equal-area physics grid cells (see Figure \ref{fig:grids}). Defining the physics grid by sub-diving elements makes it possible to use the same infrastructure as used for the quadrature point values thereby facilitating its implementation in CAM-SE. Here we make use of the $ne30np4$ and $ne30pg3$ grids that use GLL quadrature point physics grid (physics and dynamics grid coincide), and the same ($pg=3$) resolution quasi equal-area physics grids, respectively. In all configurations we use degree 3 Lagrange basis ($np=4$) and $ne\times ne=30\times 30$ elements on each cubed-sphere panel resulting in an average GLL quadrature point spacing at the Equator of $1^\circ$. Vertical grid spacing is the standard CAM5 configuration ($nlev=30$).
+Here we focus on CAM-SE, however, in principle the methods apply to any element-based high-order Galerkin model. The physics grid in CAM-SE is defined by sub-dividing each element using equi-angular gnomonic coordinate lines to define the sides of the physics grid control volumes. Note that the element boundaries are defined by equi-angular gnomonic grid lines. The notation $pg=3$ refers to the configuration where the elements are divided into $pg\times pg=3\times 3$ quasi equal-area physics grid cells (see Figure \ref{fig:np4_pg3}). Defining the physics grid by sub-diving elements makes it possible to use the same infrastructure as used for the quadrature point values thereby facilitating its implementation in CAM-SE. Here we make use of the $ne30np4$ and $ne30pg3$ grids that use GLL quadrature point physics grid (physics and dynamics grid coincide), and the same ($pg=3$) resolution quasi equal-area physics grids, respectively. In all configurations we use degree 3 Lagrange basis ($np=4$) and $ne\times ne=30\times 30$ elements on each cubed-sphere panel resulting in an average GLL quadrature point spacing at the Equator of $1^\circ$. Vertical grid spacing is the standard CAM5 configuration ($nlev=30$).
+
+\begin{figure*}[t]
+\noindent\includegraphics[width=38pc,angle=0]{figs/np4_pg3.pdf}\\
+\caption{A schematic illustration of an element, indicating the relationship between (left) the dynamical core grid, and (right) the proposed quasi-equal area physics grid. The phyiscs grid contains $pg x pg$ grid cells in each element, and $pg = 3$.}
+\label{fig:np4_pg3}
+\end{figure*}
+
 
 %\input{mapping-algorithm.tex}
 
