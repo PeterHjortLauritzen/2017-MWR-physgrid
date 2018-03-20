@@ -1,30 +1,34 @@
-\subsection{Mapping between grids}
-A consequence of separating physics and dynamics grids is that the atmospheric state must be mapped to the physics grid and the physics tendencies must be mapped back to the dynamics grid. The dynamics state is defined on the GLL grid in terms of temperature $T^{(gll)}$, zonal wind component $u^{(gll)}$, meridional wind component $v^{(gll)}$, dry pressure level thickness $\Delta p^{(gll)}$ and dry tracer mixing ratio $m^{(gll)}$ (the procedure for mapping tracers is the same for all tracers so just one generic tracer is included in the notation/algorithm).
-
-
-
-In the mapping of the atmospheric state to the physics grid it is important that the following properties are met:
+A consequence of separating physics and dynamics grids is that the atmospheric state must be mapped to the physics grid and the physics tendencies must be mapped back to the dynamics grid which is discussed in separate sections below. 
+\subsection{Mapping state dynamics grid (GLL) to physics grid (physgrid)}
+The dynamics state is defined on the GLL grid in terms of temperature $T^{(gll)}$, zonal wind component $u^{(gll)}$, meridional wind component $v^{(gll)}$, and dry pressure level thickness $\Delta p^{(gll)}$. In the mapping of the atmospheric state to the physics grid it is important that the following properties are met:
 \begin{enumerate}
 \item conservation of scalar quantities such as mass and thermal energy,\label{prop1}
 \item for tracers; shape-preservation (monotonicity), i.e. the mapping method must not introduce new extrema in the interpolated field, in particular, negatives,\label{prop2}
 \item consistency, i.e. the mapping preserves a constant,\label{prop3}
 \item linear correlation preservation.
 \end{enumerate}
-Other properties that may be important, but not pursued here, is total energy conservation and axial angular momentum conservation. 
+Other properties that may be important, but not pursued here, is total energy conservation and axial angular momentum conservation. We argue that the most consistent method for mapping scalar state variables from the GLL grid to the physics grid is to integrate the Lagrange basis functions representation (used by the SE dynamical core) over the physics grid control volumes, i.e. integrate the basis function representation of $\Delta p^{(gll)}\times T^{(gll)}$ and $\Delta p^{(gll)}$ over the physics grid control volume \citep[see, e.g., ][]{LTOUNGK2017MWR}{\color{red}{add Appendix with details}}. Thermal energy and dry air mass is conserved and the mapping is consistent. For the wind, which is a vector, the latitude-longitude wind components are mapped by transforming to contra-variant wind components, evaluate the basis function representation thereof at the equi-angular center of the physics grid control volumes and then transform back to latitude-longitude coordinate system winds. 
 
-The physics tendencies are computed on the finite-volume physics grid and are denoted $f_T^{(phys)}$,$f_u^{(phys)}$,$f_v^{(phys)}$, and $f_m^{(phys)}$. Note that dry air mass is not modified by physics and hence there is no tendency for dry mass,  $f_{\Delta p}\equiv 0$.
+The mapping of tracers is more problematic since the basis function representation is oscillatory although the shape-preserving filter guarantees shape-preservation at the GLL nodes \citep{GTS2014JCP}. To avoid this issue we use the CAM-SE-CSLAM version of CAM-SE where tracers are advected on the 3x3 physics grid. Note that in CAM-SE-CSLAM the dry mass internally predicted by CSLAM, $\Delta p^{(cslam)}$, is, by design, equal to $\Delta p^{(gll)}$ integrated over the CSLAM/physics grid control volume \citep{LTOUNGK2017MWR}. Since the tracer grid and physics grids are co-located and $\Delta p^{(physgrid)}=\Delta p^{(cslam)}$ then the  mass conservation, correlation preservation, consistency and shape-preservation constraints are trivially fulfilled.
 
-and must be mapped back to the GLL grid. It is important that this process:
+{\color{red}{explain why we are not using Paul's mapping method}}
+\subsection{Mapping tendencies from physics grid (physgrid) to dynamics grid (GLL)}
+The physics tendencies are computed on the finite-volume physics grid and are denoted $f_T^{(phys)}$,$f_u^{(phys)}$,$f_v^{(phys)}$, and $f_m^{(phys)}$. Note that dry air mass is not modified by physics and hence there is no tendency for dry mass,  $f_{\Delta p}\equiv 0$. Also, it is important to map tendencies and not state from the physics grid to GLL grid otherwise one will get spurious tendencies from mapping errors when the actual physics tendency is zero (unless a reversible map is used).
+
+It is important that this process:
 \begin{enumerate}
 \item preserves a zero tendency,
 \item for tracers; mass tendency is conserved,
+\item for tracers; in each tracer grid cell the mass tendency from physics must not exceed tracer mass available in tracer grid cell (it is assumed that the physics tendency will not drive tracer mixing ratio negative on the physics grid),\label{item:phys2fvm_consistency}
 \item linear correlation preservation,
 \item consistency, i.e. the mapping preserves a constant.
 \end{enumerate}
-Other properties that may be important, but not pursued here, is total energy conservation and axial angular momentum conservation. 
+Other properties that may be important, but not pursued here, is total energy conservation (incl. components of total energy) and axial angular momentum conservation. Scalar variables are mapped from physics grid to GLL grid using a tensor-product Lagrange interpolation. The local coordinates on a cubed-sphere are discontinuous at the element edges so the interpolation requires special attention at the cube corners and edges. The details are provided in Appendix {\color{red}{XXX}}. Lagrange interpolation preserves a constant (including zero) and linear correlations. Tracer and physics grids are co-located so tracer mass, tracer shape, and tracer correlations are trivially preserved; and the inconsistency in point \ref{item:phys2fvm_consistency} above will not appear.
 
-It is argued that the most accurate and consistent method to transfer the dynamics state from the GLL grid to the physics grid is to integrate the SE basis function representation (Lagrange polynomials) over the physics grid control volumes. This satisfies property \ref{prop1} and \ref{prop3} but not necessarily \ref{prop2} as the basis functions themselves are oscillatory. We will return to this issue.
+\begin{itemize}
+\item {\color{red}{mention why we are not doing cslam-like mapping; mention why we are not using Paul's algorithm}}
+\item {\color{red}{in results section we might want to show some energy diagnostics and estimate PDC errors; must be run with $cp_{dry}$}}
+\end{itemize}
 
 
-Note that tendencies and not an updated state is mapped back to the dynamics grid. If one were to map an updated state the errors in the mapping process may adversely affect the simulation, e.g., in the case of no physics forcing there will be a non-zero `physics forcing' entirely due to the errors in the mapping algorithm.
 
