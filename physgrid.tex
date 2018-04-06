@@ -174,11 +174,11 @@ Here we focus on CAM-SE, however, in principle the methods apply to any element-
 
 %Separation of the physics and dynamics grids was made possible through the implementation of the Conservative Semi-Lagrangian Multi-tracer transport scheme in CAM-SE (CAM-SE-CSLAM; \cite{LTOUNGK2017MWR}). Tracers evolve in CSLAM using a semi-lagrangian method on the $pg=3$ finite-volume grid (Figure~\ref{fig:np4_pg3}). The physics grid configuration is distinct from CAM-SE in that it uses the finite-volume grid to copmute the phyiscs and the tracers, using CSLAM. For this reason, the physics grid configuration is referred to as CAM-SE-CSLAM throughout the study.
 
-\begin{figure*}[t]
-\noindent\includegraphics[width=38pc,angle=0]{figs/np4_pg3.pdf}\\
+\begin{figure}[t]
+\noindent\includegraphics[width=19pc,angle=0]{figs/np4_pg3.pdf}\\
 \caption{A schematic illustration of an element, indicating the relationship between (left) the dynamical core grid, and (right) the proposed quasi-equal area physics grid. The phyiscs grid contains $pg\times pg=3\times 3$ grid cells in each element.}
 \label{fig:np4_pg3}
-\end{figure*}
+\end{figure}
 
 
 \input{mapping-algorithm.tex}
@@ -189,19 +189,19 @@ The CAM aqua-planet reference configuration \citep{NH2000ASL,MWO2016JAMES} consi
 
 The low-level, mean and variance of the physics tendencies in the two aqua-planet simulations are shown in Figure \ref{fig:tendency_imprint}. The mean states in $ne30np4$ and $ne30pg3$ resemble each another (Figure~\ref{fig:tendency_imprint}), consistent with the similar climatological zonal mean precipitation rates in both simulations (not shown). The mean physics tendencies contains modest grid imprinting in the $ne30np4$ configuration, while in the variance field, grid imprinting is both ubiquitous and unmistakable (Figure~\ref{fig:tendency_imprint}). The variance is larger on boundary nodes (Figure~\ref{fig:tendency_imprint}), manifesting as a `stitching' pattern resembling the cube-sphere grid. In $ne30pg3$, the grid imprinting is all but eliminated based on the mean and variance of the physics tendencies (Figure~\ref{fig:tendency_imprint}).
 
-\begin{figure}[t]
-\noindent\includegraphics[width=19pc,angle=0]{figs/QPC6_bar_skk.pdf}\\
+\begin{figure*}[t]
+\noindent\includegraphics[width=37pc,angle=0]{figs/QPC6_bar_skk.pdf}\\
 \caption{Mean (left) and variance (right) of the low level temperature tendencies from the physical parameterizations on the GLL grid, with the $ne30np4$ configuration, top row) and $ne30pg3$ configuration (bottom row), in a pair of year-long aqua-planet simulations after \cite{MWO2016JAMES}. Grid imprinting is observed along the element boundaries in $ne30np4$, but is absent from the $ne30pg3$ simulation.}
 \label{fig:tendency_imprint}
-\end{figure}
+\end{figure*}
 
 Grid imprinting associated with the flow around obstacles is more problematic than that encountered on the aqua-planets. In order to diagnose grid imprinting due to topographic flow, an idealized held-suarez conifugration \citep{HS1994} is outfitted with real world topography after \cite{FRETAL2000WMR,BETAL2006MWR}, and ran for a year using the $ne30np4$ and $ne30pg3$ configurations. Figure~\ref{fig:FHS-contours} shows the mean $\omega$ at two different vertical levels in the middle troposphere. At higher latitudes (e.g., the southern Andes), the flow is smooth, conforming reasonably to the underlying topography. At lower latitudes, over the Andes or the Himlayas, their is a clear preferance for larger magnitude vertical motion to occur at the element boundaries (Figure~\ref{fig:FHS-contours}). The vertical structure of $\omega$ in regions of strong grid-imprinting is depicted in Figure~\ref{fig:FHS-transect}, which are great-circle distance-pressure transects over the Andes and Himalayas. The $\omega$ field indicates large magnitude upward motion occurs as the flow approaches the foot of a topographic obstacle. Compensating downward motion tends to occur a couple of nodes downwind of the strong upward motion (although sometimes they form up-wind). The full troposphere upward-downward couplets are an indication that grid imprinting due to topography is enhanced in regions of weak stratificaiton, such as occurs in the deep tropics, with forced upslope flow facilitating the release of gravitational instabilty. The greater magnitude vertical motion is a result of the characteristically tighter pressure gradients at element boundaries. 
 
-\begin{figure}[t]
-\noindent\includegraphics[width=19pc,angle=0]{figs/FHS-contours-CROP.pdf}\\
+\begin{figure*}[t]
+\noindent\includegraphics[width=37pc,angle=0]{figs/FHS-contours-CROP.pdf}\\
 \caption{Mean $\omega$ at two model levels in the middle troposphere, in a Held-Suarez configuration outfitted with real world topography. (Left) CAM-SE state on the GLL grid, $ne30np4$, (Middle) CAM-SE-CSLAM state on the GLL grid, $ne30np4$ and (Right) CAM-SE-CSLAM state on the physics grid, $ne30pg3$. The $\omega$ fields are computed from a 1200 day Held-Suarez simulation. White lines denote the great circle transects in \ref{fig:FHS-transect}. Note that the level indices increase downward, where $nlev=30$ is the lowest model level.}
 \label{fig:FHS-contours}
-\end{figure}
+\end{figure*}
 
 
 %The grid-imprinting tends to be exaggerated in the modified held-suarez configuration, compared to more realistic configurations using a complete physical parameterization package. Figure~\ref{fig:FHS-contours} depicts the $omega$ field in an AMIP simulation, which contains less grid imprinting compared to the Held-Suarez configuration through the use of the CAM6 physics pacakge \citep{}. Physics packages contain convection schemes, whose purpose is to remove gravitational instabilites through subgrid-scale vetical mixing. Since the idealized Held-Suarez physics does not contain a convection scheme, the dynamical core tends to be more active in removing gravitational instability, compared to a full physics configuration. Note that the implications of this finding are that one can accept a level of grid-impriniting in the modified Held-Suarez configuration, and trust that it will be absent in more real-world configurations.
