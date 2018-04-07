@@ -15,24 +15,21 @@ begin
   g = 9.80616 ;m/s2
   Re = 6371.22
 
-  ;;; runs in HPSS
   rdir  = (/"/run/","/run/","/run/"/)
   dir   = "/scratch/cluster/aherring/"
   fname = (/"camtrunk_180305_FHS94topoQ_ne30_180319_1200days", \
-	    "camtrunk_180305_FHS94topoQ_ne30pg3_180319_1200days", \
-	    "camtrunk_180305_FHS94topoQ_ne30pg3_180319_1200days"/)
-  fdate = (/".cam.h1*",".cam.h1*",".cam.h1*"/)
+	    "camtrunk_180305_FHS94topoQ_ne30pg3_180322_1200days", \
+	    "camtrunk_180305_FHS94topoQ_ne30pg3_180322_1200days"/)
+  fdate = (/".cam.h0*",".cam.h0*",".cam.h0*"/)
   nfiles = dimsizes(fname)
 
   onemnth = False ;;if False, define nstart
   nstart = 1
 
-  latlon = False
+  latlon = True
   VAR = (/"U","U","U"/)
   VAR = (/"OMEGA","OMEGA_gll","OMEGA"/)
   varlev = (/22,19/) ;;23-1 And, 20-1 Him
-  LAT = (/"lat","lat_d","lat"/)
-  LON = (/"lon","lon_d","lon"/)
   factor = secpday/100.
 
   manlevs = True
@@ -60,12 +57,20 @@ begin
              "ne30pg3-on-np4", \
              "ne30pg3-on-pg3"/)
 
-  leftlat  = (/ -7., 10./);;;(/ -10., 10./)
-  rightlat = (/  -7., 70./);;;(/  -9., 70./)
-  leftlon  = (/-100., 89./)
-  rightlon = (/ -60., 89./)
+  leftlat  = (/ -60., 10./);;;Andes opts =  -7.,   -31.5, -60.
+  rightlat = (/  -7., 70./) ;;;Andes opts =  -7.,   -7. ,  -7.
+  leftlon  = (/ -70.2, 89./) ;;;Andes opts =-100.,-100. , -70.2
+  rightlon = (/ -69.8, 89./) ;;;Andes opts = -60., -60. , -69.8 
 
   pltNam = "temp"
+
+  if (latlon) then
+    LAT = (/"lat","lat","lat"/)
+    LON = (/"lon","lon","lon"/)
+  else
+    LAT = (/"lat","lat_d","lat"/)
+    LON = (/"lon","lon_d","lon"/)
+  end if
 
 ;************** 
 ;graphics stuff
@@ -122,11 +127,11 @@ begin
    rest@cnLevelSelectionMode = "ExplicitLevels"     ; manually set the contour levels with the following 3 resources
    rest@cnLevels = (/1000.,2000.,3000.,4000.,5000./)
    rest@cnLineThicknessF   = 0.75
-   rest@cnLineColor = "white";;"grey43"
+   rest@cnLineColor = "black";;;"white";;"grey43"
    rest@cnLineDrawOrder = "PostDraw"
 
    ;res@mpCenterLonF = 180.
-   ;res@mpOutlineOn          = True    ; turn off continental outline
+   ;res@mpOutlineOn          = False    ; turn off continental outline
    res@mpGridAndLimbOn   = False           ; turn on lat/lon lines
    res@mpGridLatSpacingF = 5.
    res@mpGridLonSpacingF = 30.
@@ -166,13 +171,9 @@ begin
  files = systemfunc ("ls " + dir + fname(n) + rdir(n) + fname(n) + fdate(n))
  nf = dimsizes(files)
  if (onemnth) then
-   nstart = nf-3
-   nfinish = nf-2
+   nfinish = nstart
  else
-   nfinish = 20;nf-1
-   if (n.eq.2) then
-     ;;nfinish = 48
-   end if
+   nfinish = nf-1
  end if
 
  print("load files...")

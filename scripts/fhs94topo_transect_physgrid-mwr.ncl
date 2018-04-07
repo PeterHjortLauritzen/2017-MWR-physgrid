@@ -15,7 +15,6 @@ begin
   g = 9.80616 ;m/s2
   p0 = 1.e5 ;Pa
 
-  ;;; runs in HPSS
   rdir  = (/"/run/","/run/","/run/"/)
   dir   = "/scratch/cluster/aherring/"
   fname = (/"camtrunk_180305_FHS94topoQ_ne30_180319_1200days", \
@@ -51,10 +50,10 @@ begin
   eq = (/128,128,128/)
 
   npts 	   = (/ 60, 60/)
-  leftlat  = (/ - 7., 10./);;;(/ -10., 10./) ;;(/ -6.3, 10./)
-  rightlat = (/  -7., 50./);;;(/  -9., 50./) ;;(/ -6.3, 50./)
-  leftlon  = (/-100., 89./)
-  rightlon = (/ -60., 89./)
+  leftlat  = (/ -60., 10./);;;Andes opts =  -7.,   -31.5, -60.
+  rightlat = (/  -7., 70./) ;;;Andes opts =  -7.,   -7. ,  -7.
+  leftlon  = (/ -70.2, 89./) ;;;Andes opts =-100.,-100. , -70.2
+  rightlon = (/ -69.8, 89./) ;;;Andes opts = -60., -60. , -69.8
 
   titles = (/"ne30np4-on-np4", \
              "ne30pg3-on-np4", \
@@ -62,7 +61,7 @@ begin
 
   labels = new( (/2*nfiles/), string)
   do i = 0,nfiles-1
-    labels(2*i) = "Andes (E-W)"
+    labels(2*i) = "Andes (S-N)"
     labels(2*i+ 1) = "Himalayas (S-N)"
   end do
 
