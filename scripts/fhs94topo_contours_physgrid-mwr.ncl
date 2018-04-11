@@ -57,10 +57,10 @@ begin
              "ne30pg3-on-np4", \
              "ne30pg3-on-pg3"/)
 
-  leftlat  = (/ -60., 10./);;;Andes opts =  -7.,   -31.5, -60.
-  rightlat = (/  -7., 70./) ;;;Andes opts =  -7.,   -7. ,  -7.
-  leftlon  = (/ -70.2, 89./) ;;;Andes opts =-100.,-100. , -70.2
-  rightlon = (/ -69.8, 89./) ;;;Andes opts = -60., -60. , -69.8 
+  leftlat  = (/ -13., 10./);;;Andes opts =  -7.,   -31.5, -60.
+  rightlat = (/ -13., 70./) ;;;Andes opts =  -7.,   -7. ,  -7.
+  leftlon  = (/-100., 89./) ;;;Andes opts =-100.,-100. , -70.2
+  rightlon = (/ -50., 89./) ;;;Andes opts = -60., -60. , -69.8 
 
   pltNam = "temp"
 
@@ -71,6 +71,11 @@ begin
     LAT = (/"lat","lat_d","lat"/)
     LON = (/"lon","lon_d","lon"/)
   end if
+
+  writencdf = True
+  fname_out = "fhs-contours.nc"
+  andnams = (/"and1","and2","and3"/)
+  hindnams = (/"hind1","hind2","hind3"/)
 
 ;************** 
 ;graphics stuff
@@ -325,6 +330,15 @@ begin
   plot@$tstr1$ = gsn_add_polymarker(wks,plot(andind),dum@gclon ,dum@gclat ,mkres)
   plot@$tstr2$ = gsn_add_polymarker(wks,plot(himind),dum@gclon ,dum@gclat ,mkres)
   delete(dum)
+ end if
+
+ if (writencdf) then
+   if (n.eq.0) then
+     system("/bin/rm -f "+fname_out)
+     ncdf = addfile(fname_out , "c")
+   end if
+   ncdf->$andnams(n)$ = bar1
+   ncdf->$hindnams(n)$ = bar2
  end if
 
 delete(bar1)

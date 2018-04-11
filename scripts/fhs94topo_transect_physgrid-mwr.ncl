@@ -50,10 +50,10 @@ begin
   eq = (/128,128,128/)
 
   npts 	   = (/ 60, 60/)
-  leftlat  = (/ -60., 10./);;;Andes opts =  -7.,   -31.5, -60.
-  rightlat = (/  -7., 70./) ;;;Andes opts =  -7.,   -7. ,  -7.
-  leftlon  = (/ -70.2, 89./) ;;;Andes opts =-100.,-100. , -70.2
-  rightlon = (/ -69.8, 89./) ;;;Andes opts = -60., -60. , -69.8
+  leftlat  = (/ -13., 10./);;;Andes opts =  -7.,   -31.5, -60.
+  rightlat = (/ -13., 70./) ;;;Andes opts =  -7.,   -7. ,  -7.
+  leftlon  = (/-100., 89./) ;;;Andes opts =-100.,-100. , -70.2
+  rightlon = (/ -50., 89./) ;;;Andes opts = -60., -60. , -69.8
 
   titles = (/"ne30np4-on-np4", \
              "ne30pg3-on-np4", \
@@ -61,9 +61,14 @@ begin
 
   labels = new( (/2*nfiles/), string)
   do i = 0,nfiles-1
-    labels(2*i) = "Andes (S-N)"
+    labels(2*i) = "Andes (W-E)"
     labels(2*i+ 1) = "Himalayas (S-N)"
   end do
+
+  writencdf = True
+  fname_out = "fhs-transect.nc"
+  andnams = (/"and1","and2","and3"/)
+  hindnams = (/"hind1","hind2","hind3"/)
 
 ;************** 
 ;graphics stuff
@@ -267,6 +272,19 @@ do regind = 0,1 ;;And and Him
 
   plot( 2*n + regind )  = gsn_csm_contour(wks,var,res)
 
+  if (writencdf) then
+    if (n.eq.0 .and. regind.eq.0) then
+      system("/bin/rm -f "+fname_out)
+      ncdf = addfile(fname_out , "c")
+    end if
+
+    if (regind.eq.0) then
+      ncdf->$andnams(n)$ = var
+    else
+      ncdf->$hindnams(n)$ = var
+    end if 
+  end if
+
   delete(var)
 
 end do;regind
@@ -288,6 +306,7 @@ end do;regind
 ;;  gsn_text_ndc(wks,titles(n),xx(n),yy(n),txres)
 
 end do
+
 
 ;drawNDCGrid(wks)
 ;************************************************
