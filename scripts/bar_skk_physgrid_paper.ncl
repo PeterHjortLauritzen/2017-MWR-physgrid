@@ -48,8 +48,8 @@ begin
   plabels = True
   labels = (/ "ne30np4","ne30np4","ne30pg3","ne30pg3"/)
 
-  varNam = (/"Mean of ~F10~f~B~T~N~~F21~ on GLL grid (K/s), 930 hPa", \
-  	     "Variance of ~F10~f~B~T~N~~F21~ on GLL grid (K~S~2~N~/s~S~2~N~), level 28"/)
+  varNam = (/"Mean of ~F10~f~B~T~N~~F21~ on GLL grid (K/s), 930 hPa level", \
+  	     "Variance of ~F10~f~B~T~N~~F21~ on GLL grid (K~S~2~N~/s~S~2~N~), 930 hPa level"/)
 
   writencdf = False
   fname_out = "bar_skk_mwr_paper-QPC4.nc"
