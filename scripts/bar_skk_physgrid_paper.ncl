@@ -14,11 +14,9 @@ begin
   g = 9.80616 ;m/s2
   Re = 6371.22
 
-
-  ;;; these runs have been deleted (not in HPSS)
   dir   = "/glade/scratch/aherring/"
-  fname = (/"physgrid_171113_QPC6_ne30_171114", \
-	    "physgrid_171113_QPC6_ne30pg3_171114"/)
+  fname = (/"physgrid_180401_QPC4_ne30_180411", \
+	    "physgrid_180401_QPC4_ne30pg3_180411"/)
   fdate = (/".cam.h2*",".cam.h2*"/)
   nfiles = dimsizes(fname)
 
@@ -29,15 +27,16 @@ begin
 
   VAR = (/"FT","FT"/)
   var3d = True
-  varlev = 27 ;; 21-1 or 17-1 QPC6 ;;23-1 And 20-1 Him
+  varlev = 23 ;; 28-1 for QPC6; 24-1 for QPC4
   LAT = (/"lat","lat_d"/)
   LON = (/"lon","lon_d"/)
   factor = 1.
 
   manlevs = True
-  cmin = (/0.,     0.2e-9/)   ;;L27bar->;;0.     ;;L27skk->;;0.2e-9
-  cmax = (/2.86e-5,4.3e-9/)   ;;L27bar->;;2.86e-5;;L27skk->;;4.3e-9
-  cspc = (/1.91e-7,2.7334E-11/) ;;L27bar->;;1.91e-7;;L27skk->;;2.7334E-11
+  ;;cmin = (/-3.E-6  ,1.2E-10/) ;;;(/0.,     0.2e-9/)   ;;L27bar->;;0.     ;;L27skk->;;0.2e-9
+  cmin = (/ 0.  ,1.2E-10/)
+  cmax = (/ 2.68E-5, 3.1E-9/) ;;;(/2.86e-5,4.3e-9/)   ;;L27bar->;;2.86e-5;;L27skk->;;4.3e-9
+  cspc = (/ 2.E-7  , 2.E-11/) ;;;(/1.91e-7,2.7334E-11/) ;;L27bar->;;1.91e-7;;L27skk->;;2.7334E-11
 
   seover = True ;;overlay panel boundaries
 
@@ -49,8 +48,18 @@ begin
   plabels = True
   labels = (/ "ne30np4","ne30np4","ne30pg3","ne30pg3"/)
 
-  varNam = (/"Mean of ~F10~f~B~T~N~~F21~ on GLL grid (K/s), level 28", \
+  varNam = (/"Mean of ~F10~f~B~T~N~~F21~ on GLL grid (K/s), 930 hPa", \
   	     "Variance of ~F10~f~B~T~N~~F21~ on GLL grid (K~S~2~N~/s~S~2~N~), level 28"/)
+
+  writencdf = False
+  fname_out = "bar_skk_mwr_paper-QPC4.nc"
+  barnams = (/"bar1","bar2"/)
+  skknams = (/"skk1","skk2"/)
+  latnams = (/"lat1d1","lat1d2"/)
+  lonnams = (/"lon1d1","lon1d2"/)
+
+  loadncdf = True
+  fname_in = "bar_skk_mwr_paper-QPC4.nc"
 
   plotName = "temp_paper"
 
@@ -115,6 +124,8 @@ begin
  
  print("begin case "+n)
 
+if (.not.loadncdf) then
+
  ;load all files
  files = systemfunc ("ls " + dir + fname(n) + "/run/" + fname(n) + fdate(n))
  nf = dimsizes(files)
@@ -156,12 +167,6 @@ begin
    delete(var)
    var = var_regrid
    delete(var_regrid)
- else if (.not.latlon) then
-   res@sfXArray = lon1d
-   res@sfYArray = lat1d
-   res2@sfXArray = lon1d
-   res2@sfYArray = lat1d
- end if
  end if
 
  print("dim_avg_0...")
@@ -179,12 +184,30 @@ begin
  print("dim_variance_0...")
  skk = dim_variance_0_lowmem(var,rank,bar)
 
- print("plotting...")
-
  if (latlon) then
   copy_VarMeta(attr,skk)
   copy_VarMeta(attr,bar)
   delete(attr)
+ end if
+ delete(var)
+else
+;;;only works for latlon = False
+  if (n.eq.0) then
+    ncdf = addfile(fname_out,"r")
+  end if
+  bar = ncdf->$barnams(n)$
+  skk = ncdf->$skknams(n)$
+  lat1d = ncdf->$latnams(n)$
+  lon1d = ncdf->$lonnams(n)$
+end if
+
+ print("plotting...")
+
+ if (.not.latlon) then
+   res@sfXArray = lon1d
+   res@sfYArray = lat1d
+   res2@sfXArray = lon1d
+   res2@sfYArray = lat1d
  end if
 
  if (n.eq.nfiles-1) then
@@ -228,8 +251,22 @@ begin
   overlay_se_grid(wks,plot(2*n+1))
  end if
 
+print("Max bar " + max(bar))
+print("Min bar " + min(bar))
+print("Max skk " + max(skk))
+print("Min skk " + min(skk))
 
-delete(var)
+ if (writencdf) then
+   if (n.eq.0) then
+     system("/bin/rm -f "+fname_out)
+     ncdf = addfile(fname_out,"c")
+   end if
+   ncdf->$barnams(n)$ = bar
+   ncdf->$skknams(n)$ = skk
+   ncdf->$latnams(n)$ = lat1d
+   ncdf->$lonnams(n)$ = lon1d
+ end if
+
 delete(bar)
 delete(skk)
 delete(lat1d)
