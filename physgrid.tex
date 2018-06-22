@@ -16,10 +16,10 @@
 
 %% Start with one of the following:
 % DOUBLE-SPACED VERSION FOR SUBMISSION TO THE AMS
-\documentclass{ametsoc}
+%\documentclass{ametsoc}
 
 % TWO-COLUMN JOURNAL PAGE LAYOUT---FOR AUTHOR USE ONLY
-% \documentclass[twocol]{ametsoc}
+\documentclass[twocol]{ametsoc}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% To be entered only if twocol option is used
@@ -124,7 +124,8 @@
 An increasing number of numerical methods publications in the atmospheric science literature concern transport, shallow-water, and three-dimensional models employing element-based high-order Galerkin discretizations such as finite-element and discontinuous Galerkin methods \citep[for an introduction to these methods see, e.g., ][]{Durran,NLL2011LNCSE,U2014GMD}. Some global models based on Galerkin methods have reached a level of maturity for which they are being considered for next generation climate and weather models due to their inherent conservation properties, high-order accuracy (for smooth problems), high parallel efficiency, high processor efficiency, and geometric flexibility facilitating mesh-refinement applications. NCAR's Community Atmosphere Model \citep[CAM; ][]{CAM5} offers a dynamical core based on continuous Galerkin finite elements \citep{TF2010JCP}, referred to as CAM-SE \citep[CAM Spectral Elements; ][]{DetAl2012IJHPCA,TES2008JPCS,LetAl2018JAMES}. CAM-SE is, in particular, being used for high resolution climate modeling \citep[e.g., ][]{JAME:JAME20125,RetAl2015GRL,BETAL2018CC} and static mesh-refinement applications \citep[e.g., ][]{FT2004MWR,ZetAl2014JC,ZetAl2014JCb,GetAl2014GMD,RHUZ2016JAMC}. Other examples of models based on high-order Galerkin methods that are being considered for `operational' weather-climate applications are \citet{Giraldo20083849}, \citet{NCT2009CF} and \citet{BSBDK2013TCFD}.
 
 \begin{figure}[t]
-\noindent\includegraphics[width=37pc,angle=0]{gll.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{gll.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{figs/quadrature-fig/gll.pdf}\\
 \caption{Example of CAM-SE GLL quadrature grids, marked with red filled circles, (a \& c) on the cubed-sphere and (b \& d) in an element. (a)-(b) and (c)-(d) use $4\times 4$ ($np=4$) and $8\times 8$ ($np=8$) GLL quadrature points in each element, respectively. (a) and (c) have the same average grid-spacing at the Equator (7.5$^\circ$) which is obtained by using (a) $4\times 4$ ($ne=4$) and (b) $2\times 2$ ($ne=2$) elements on each cubed-sphere face/panel, respectively. The element boundaries are marked with thick light blue lines. The grid configurations shown on (a) and (c) are referred to as $ne4np4$ and $ne2np8$, respectively.}
 \label{fig:gll-grids}
 \end{figure}
@@ -136,22 +137,27 @@ For the regular latitude-longitude, cubed-sphere and icosahedral grids the dista
 The resolved scales of motion are not determined by the distance between quadrature nodes, but rather the degree of the polynomial basis in each element. The nodes may be viewed as irregularly spaced samples of an underlying spectrally truncated state. From this perspective, one might expect the nodal solutions to be independent of location within an element. While the interior quadrature nodes are $C^{\infty}$ in CAM-SE (i.e. the basis representation is infinitely smooth and all derivatives are continuous), the smoothness of boundary nodes are constrained by the need to patch neighboring solutions together to form the global basis set, an operation known as the direct stiffness summation \citep[DSS; ][]{MadayPatera87,canuto2007}. The DSS operation is attractive because it allows for high-order accuracy with minimal communication between elements, but degrades the solution to $C^0$ at element boundaries (i.e., all derivatives are discontinuous). The DSS operation is thoroughly explained in the schematic in Figure~\ref{fig:se-schematic} and these details are not repeated here. Through evaluating the physics at the nodal points, strong grid-scale forcing or oscillatory behavior near an element boundary may exacerbate the discontinuity, and our initial expectation, that the nodal solutions are independent of within-element location, is unlikely for non-smooth problems, e.g., the presence of rough topography or moist physics grid-scale forcing (see Figure~\ref{fig:se-schematic}). 
 
 \begin{figure*}[t]
-\noindent\includegraphics[width=38pc,angle=0]{se-schematic-arh-CROP.pdf}\\
+%\noindent\includegraphics[width=38pc,angle=0]{se-schematic-arh-CROP.pdf}\\
+\noindent\includegraphics[width=38pc,angle=0]{figs/se-schematic-arh-CROP.pdf}\\
 \caption{A one-dimensional schematic illustration on how CAM-SE advances the solution to the equations of motion in time. Consider a transect across three elements. The filled circles are the GLL quadrature points in each element ($np=4$). Note that the quadrature points on the boundary are shared between elements. (a) Smooth initial condition with quadrature points in red. (b) The solution to the equations of motion are advanced in time (one Runge-Kutta step) independently in each element leading to the quadrature values marked with filled blue circles. The Lagrange basis is shown as curves connecting the blue circles. There are now two solutions, one from left and one from right, for the quadrature points at the element boundaries. In CAM-SE a numerical flux is applied to the element boundary that results in a simple average of the two nodal values, but degrades the boundary nodes to $C^0$. Note that the averaging changes the Lagrange polynomials throughout except at the internal quadrature points. (c) shows the solution after applying the boundary flux. (d) Assume there is a grid-scale physics forcing that increases the quadrature value at the location of the arrow. (e) The solution is now clearly $C^0$ at the element boundary. (f) Vertical bars indicate the average values resulting from integrating the basis functions over the control volumes of the quasi-equal area physics grid. (g)-(i), repeats the scenario of (d)-(f), but instead with a forcing applied to an interior node (arrow in (g)), illustrating the $C^{\infty}$ smoothness of interior nodes.}
 \label{fig:se-schematic}
 \end{figure*}
 
+\section{{\color{red}The Quadrature Node Problem{}}}
+
 To test the degree to which nodal solutions depend on within-element position, an aqua-planet simulation \citep{NH2000ASL,MWO2016JAMES} is carried out using CAM-SE. The probability density distribution of the upward vertical pressure velocity ($\omega$), conditionally sampled based on three categories - `interior', `edge' and `corner' nodes - is provided in Figure~\ref{fig:omega-se-volumes}. There is an apparent dependence on nodal location, with interior nodes being characteristically sluggish, and corner and edge nodes having systematically larger magnitude vertical motion. This behavior is consistent with the smoothness properties of the different nodal locations. The pressure gradient at the element boundaries is discontinuous and systematically tighter (Figure~\ref{fig:se-schematic}), resulting in greater vertical motion at `edge' and `corner' nodes (Figure~\ref{fig:omega-se-volumes}). The main division of solutions shown in Figure~\ref{fig:omega-se-volumes} is primarily between whether a node is, or is not situated on an element boundary, and is a nuanced signature of high-order element-based Galerkin methods for non-smooth problems.
 
 \begin{figure}[t]
-\noindent\includegraphics[width=37pc,angle=0]{temp_pdf_omg_np4_v_pg3_CROP.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{temp_pdf_omg_np4_v_pg3_CROP.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{figs/temp_pdf_omg_np4_v_pg3_CROP.pdf}\\
 \caption{Probability density distribution of instantaneous upward $\omega$ in a pair of aqua-planet simulations using CAM4 physics. Figure is constructed from one year of six hourly data, at all vertical levels. (Left) $ne30np4$ configuration conditionally sampled for interior, edge and corner node control volumes, and (Right) $ne30pg3$ configuration, but sampled by within-element physics grid-cell location. Note the consistently larger magnitude $\omega$ for boundary nodes compared with interior nodes, and that the bias is eliminated through mapping to a quasi-equal area physics grid.}\label{fig:omega-se-volumes}
 \end{figure}
 
 If the conventional physics-dynamics coupling paradigm is applied to CAM-SE, then the physics are to be evaluated at the GLL nodes, and a volume associated with the quadrature point should be defined. An example of that is shown on Figure \ref{fig:cv-grids} where control volumes have been defined around the quadrature points so that the spherical area of the control volumes exactly match the Gaussian weight multiplied by the metric term (these weights are used for integrating the basis functions over the elements and can therefore, in this context, be interpreted as areas). This grid is used in the NCAR CESM (Community Earth System Model) coupler for passing states between ocean, atmosphere and land components since the current remapping method is finite-volume based and therefore requires control volumes (it is noted that methods exist that do not require control volumes for conservative interpolation, e.g., \cite{UT2015MWR}). Hence the components `see' an irregular atmospheric grid. Similarly, the parameterizations in the atmosphere `see' a state that is anisotropically sampled in space \citep[see Figure 1 and 5 in ][]{KetAl2008JGR}.
 
 \begin{figure}[t]
-\noindent\includegraphics[width=37pc,angle=0]{se_gll_cv_grid.eps}\\
+%\noindent\includegraphics[width=37pc,angle=0]{se_gll_cv_grid.eps}\\
+\noindent\includegraphics[width=37pc,angle=0]{figs/se_gll_cv_grid.eps}\\
 \caption{An example of control volumes constructed around GLL quadrature points ($ne4np4$) so that the spherical area of the control volumes exactly match the quadrature weight multiplied by the metric factor.}
 \label{fig:cv-grids}
 \end{figure}
@@ -165,7 +171,8 @@ It is the purpose of this paper to document the implementation of a quasi-equal 
 Here we focus on CAM-SE, however, in principle the methods apply to any element-based high-order Galerkin model. The physics grid in CAM-SE is defined by sub-dividing each element using equi-angular gnomonic coordinate lines to define the sides of the physics grid control volumes (see the Appendix for details). Note that the element boundaries are defined by equi-angular gnomonic grid lines. The notation $pg=3$ refers to the configuration where the elements are divided into $pg\times pg=3\times 3$ quasi equal-area physics grid cells (see Figure \ref{fig:np4_pg3}). Defining the physics grid by sub-dividing elements makes it possible to use the same element infrastructure as already used in CAM-SE, thereby facilitating its implementation. Here we make use of the $ne30np4$ and $ne30pg3$ grids that use GLL quadrature point physics grid (physics and dynamics grid coincide), and the same ($pg=3$) resolution quasi equal-area physics grids, respectively. In all configurations we use degree three Lagrange basis ($np=4$) and $ne\times ne=30\times 30$ elements on each cubed-sphere panel resulting in an average GLL quadrature point spacing at the Equator of $1^\circ$, a common resolution used for global modeling. %Vertical grid spacing is the standard CAM5 configuration ($nlev=30$)
 
 \begin{figure}[t]
-\noindent\includegraphics[width=37pc,angle=0]{np4_pg3.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{np4_pg3.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{figs/np4_pg3.pdf}\\
 \caption{A schematic illustration of an element, indicating the relationship between (left) the dynamical core grid, and (right) the proposed quasi-equal area physics grid. The physics grid contains $pg\times pg=3\times 3$ grid cells in each element.}
 \label{fig:np4_pg3}
 \end{figure}
@@ -214,7 +221,8 @@ The low-level, mean and variance of the physics tendencies in the two aqua-plane
 As stated in Section \ref{sec:methods}, the mapping of the state to the physics grid and the reverse interpolation of physics tendencies to the GLL grid is not total energy conserving. CAM has a global energy fixer \citep{WOHTTV2015JAMES} which can be used to estimate the errors associated with the mapping algorithms. To do so, it is presumed that there are no compensating mapping errors in going to and from the physics and dynamics grids, and that CAM-SE-CSLAM and CAM-SE have the same energy dissipation rates. Under these assumptions the spurious globally integrated total energy errors due to the mapping algorithm is estimated to be approximately 0.0025 $W/m^2$ in the aqua-planet simulations. In comparison, the dynamical core total energy dissipation is on the order of 0.1 $W/m^2$ \citep{LetAl2018JAMES}. 
 
 \begin{figure*}[t]
-\noindent\includegraphics[width=37pc,angle=0]{QPC4_bar_skk.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{QPC4_bar_skk.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{figs/QPC4_bar_skk.pdf}\\
 \caption{Mean (left) and variance (right) of the low level temperature tendencies from the physical parameterizations on the GLL grid, with the $ne30np4$ configuration, (top row) and $ne30pg3$ configuration (bottom row), in a pair of year-long aqua-planet simulations after \cite{MWO2016JAMES}. Grid imprinting is observed along the element boundaries in $ne30np4$, but is absent from the $ne30pg3$ simulation.}
 \label{fig:tendency_imprint}
 \end{figure*}
@@ -224,7 +232,8 @@ Grid imprinting associated with the flow around obstacles is more problematic th
 At higher latitudes (e.g., the southern Andes), the flow is smooth, conforming reasonably to the underlying topography. At lower latitudes (within 20 to 30 degrees from the equator), over the Andes or the Himalayas, their is a clear preference for extrema to occur at the element boundaries (Figure~\ref{fig:FHS-contours}). The vertical structure of $\omega$ in regions of strong grid-imprinting indicates full-troposphere upward/downward motion (not shown). Grid imprinting is therefore more common in regions of weak stratification, such as occurs in the deep tropics, with forced up-slope flow facilitating the release of gravitational instability. Resolved updrafts/downdrafts often align with the element boundaries due to its systematically tighter pressure gradients, as explained in Figure~\ref{fig:se-schematic}. This type of grid imprinting has been previously indentified in CAM-SE in an AMIP configuration (Figure $7$ in \cite{gmdd-8-4623-2015}), manifesting as a band of precipitation near the foot of the Himalayas.   
 
 \begin{figure*}[t]
-\noindent\includegraphics[width=37pc,angle=0]{FHS-contours-CROP.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{FHS-contours-CROP.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{figs/FHS-contours-CROP.pdf}\\
 \caption{Mean $\omega$ at two model levels in the middle troposphere, in a Held-Suarez configuration outfitted with real world topography. (Left) CAM-SE state on the GLL grid, $ne30np4$, (Middle) CAM-SE-CSLAM state on the GLL grid, $ne30np4$ and (Right) CAM-SE-CSLAM state on the physics grid, $ne30pg3$. The $\omega$ fields are computed from a 1200 day Held-Suarez simulation. The data are contoured according to a `cell fill' approach, in which the coupler grids (e.g, Figure~\ref{fig:cv-grids}) are used to delineate the vertices of the control volumes.} 
 \label{fig:FHS-contours}
 \end{figure*}
@@ -267,7 +276,8 @@ The mapping of the physics tendencies from the physics grid to the GLL grid is d
 where $\Delta \alpha^{(pg)}=\Delta \beta^{(pg)}=\frac{\Delta \alpha^{(elem)}}{pg}=\frac{\Delta \beta^{(elem)}}{pg}$. The interpolation is performed in central-angle coordinates using tensor product cubic interpolation. For elements located on a cubed-sphere edge or corner the coordinate system for neighboring elements may be on a different panel. To take into account this coordinate change the central angle locations of physics grid cell centers located on other panels are transformed to the coordinate system of the panel the element in question is located on \cite[the transformations are given in, e.g.,  ][]{NTL2005MWRb}. An illustration is given in Figure \ref{fig:mapping} for an element located in the lower left corner of a panel. The element in question is $(\xi,\chi)\in (-1,1)^2$ where, for simplicity, we have transformed the element coordinates into normalized coordinates $(\xi,\chi) = \left( \frac{ 2\left(\alpha^{(pg)}-\alpha^{(elem)}_1\right)}{\Delta \alpha^{(elem)}}-1,\frac{2\left( \beta^{(pg)}-\beta^{(elem)}_1\right)}{\Delta \beta^{(elem)}}-1\right)$; also used internally in the SE dynamical core \citep[see, e.g., section 3.3 in ][]{LetAl2018JAMES}. The GLL points are located at -1,$-\sqrt{5}/5$, $\sqrt{5}/5$, and 1 in each coordinate direction. Near the edges/corners of an element cubic extrapolation is used if the centered stencil expands beyond the panel.
 
 \begin{figure}[t]
-\noindent\includegraphics[width=37pc,angle=0]{mapping.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{mapping.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{figs/mapping/mapping.pdf}\\
 \caption{Schematic of the coordinate system in which the dimensionally split cubic Lagrange interpolation is computed.  The physics grid centers are marked with asterisks and the GLL points, we are interpolating to, with solid filled circles. The element in which the GLL points are located is  bounded by  thick black lines and located in the lower left corner of a panel. The stippled lines mark the boundaries of the remaining elements. For simplicity we are using the normalized coordinate centered at the element on which the GLL points we are interpolating to are located. Note that the coordinates for points on neighboring panels (using a different local coordinate system) must be transformed to the coordinate system of the element in question.}
 \label{fig:mapping}
 \end{figure}
