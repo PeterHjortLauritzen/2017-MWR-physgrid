@@ -25,8 +25,8 @@ begin
 
   ;;;run is in HPSS
   dir = "/glade2/scratch2/aherring/"
-  fname = (/"camtrunk_180208_QPC4_ne30pg3_180302"/)
-  fdate = ".cam.h1.*"
+  fname = (/"physgrid_180401_QPC4_ne30pg3_ne30pg3_mg17_180706"/)
+  fdate = ".cam.h2.*"
   nfiles = dimsizes(fname)
 
   VAR = "OMEGA"
@@ -43,9 +43,8 @@ begin
   xaxis = "~F33~w~F21~ (Pa/s)"
 
   writenetcdf = True
-  fname_out = "ne30pg3_pdfxnbins200.nc"
-  varnams = (/"pdf1","pdf2","pdf3","pdf4","pdf5", \
-	      "pdf6","pdf7","pdf8","pdf9"/)
+  fname_out = "ne30pg3_pdfxnbins200_new.nc"
+  varnams = (/"pdfC","pdfE","pdfM"/)
 
   pltNam = "temp"
   colors = (/"red","green","blue","orangered","deepskyblue1","magenta","darkorchid4","dodgerblue","darkseagreen"/)
@@ -122,43 +121,82 @@ print("Begin case "+n)
   delete(f)
 
   dims = dimsizes(var)
-print(dims(2))
-print(dims(2)/nx) ;;5400
-  vars = new( (/nx,dims(0),dims(1),5400/), "float")
+  nelem = 5400 ;;;dims(2)/nx)
+  vars = new( (/nx,dims(0),dims(1),nelem/), "float")
 
   do m = 0,nx-1
 
-   print("Starting pdf " + m)
+    cnt = 0
+    do ff = 0,5
+      indtmp = indcol(ff)
+      do my = 0,29
+        do mx = 0,29
+          vars(m,:,:,cnt) = var(:,:,indtmp)
+          indtmp = indtmp + 9
+          cnt = cnt + 1
+          print("cnt = " + cnt)
+        end do  
+      end do    
+    print(indtmp-9)
+    end do
+    indcol = indcol + 1
 
- cnt = 0
- do ff = 0,5
-   indtmp = indcol(ff)
-   do my = 0,29
-     do mx = 0,29
-       vars(m,:,:,cnt) = var(:,:,indtmp)
-       indtmp = indtmp + 9
-       cnt = cnt + 1
-       print("cnt = " + cnt)
-     end do  
-   end do    
- print(indtmp-9)
- end do
- indcol = indcol + 1
+  end do
 
-   w = vars(m,:,:,:)
+  ;;;rearrange into 3 groups
+  ;;;(/0,2,6,8/) = corners
+  ;;;(/1,3,5,7/) = edges
+  ;;;(/4/)       = center
+
+  varC = new( (/dims(0),dims(1),nelem*4/), "float" )
+  varE = new( (/dims(0),dims(1),nelem*4/), "float" )
+  varM = new( (/dims(0),dims(1),nelem/), "float" )
+
+  varC(:,:,       0:nelem-1  ) = vars(0,:,:,:)
+  varC(:,:,   nelem:2*nelem-1) = vars(2,:,:,:)
+  varC(:,:, 2*nelem:3*nelem-1) = vars(6,:,:,:)
+  varC(:,:, 3*nelem:4*nelem-1) = vars(8,:,:,:)
+
+  varE(:,:,       0:nelem-1  ) = vars(1,:,:,:)
+  varE(:,:,   nelem:2*nelem-1) = vars(3,:,:,:)
+  varE(:,:, 2*nelem:3*nelem-1) = vars(5,:,:,:)
+  varE(:,:, 3*nelem:4*nelem-1) = vars(7,:,:,:)
+
+  varM(:,:,       0:nelem-1  ) = vars(4,:,:,:)
+
+  print("Starting pdf " + m)
+
    if (optpdf) then
-     w@_FillValue = default_fillvalue("float")
-     w = where(w.lt.0.,w,w@_FillValue)
-     pdfvar = pdfx_lowmem(w,3,nbins,optpdf)
-     delete(w)
+
+     varC@_FillValue = default_fillvalue("float")
+     varC = where(varC.lt.0.,varC,varC@_FillValue)
+     pdfvarC = pdfx_lowmem(varC,3,nbins,optpdf)
+
+     varE@_FillValue = default_fillvalue("float")
+     varE = where(varE.lt.0.,varE,varE@_FillValue)
+     pdfvarE = pdfx_lowmem(varE,3,nbins,optpdf)
+
+     varM@_FillValue = default_fillvalue("float")
+     varM = where(varM.lt.0.,varM,varM@_FillValue)
+     pdfvarM = pdfx_lowmem(varM,3,nbins,optpdf)
+
    else
-     w1d = ndtooned(w)
-     up = ind(w1d.lt.0.)
-     pdfvar = pdfx(w1d(up),nbins,optpdf)
-     delete(w1d)
+
+     varC1d = ndtooned(varC)
+     up = ind(varC1d.lt.0.)
+     pdfvarC = pdfx(varC1d(up),nbins,optpdf)
      delete(up)
-print("max bin " + pdfvar@bin_bound_max)
-print("min bin " + pdfvar@bin_bound_min)
+
+     varE1d = ndtooned(varE)
+     up = ind(varE1d.lt.0.)
+     pdfvarE = pdfx(varE1d(up),nbins,optpdf)
+     delete(up)
+
+     varM1d = ndtooned(varM)
+     up = ind(varM1d.lt.0.)
+     pdfvarM = pdfx(varM1d(up),nbins,optpdf)
+     delete(up)
+
    end if
 
   ;;if (loadnetcdf) then
@@ -168,31 +206,27 @@ print("min bin " + pdfvar@bin_bound_min)
   ;; pdfvar = ncdf->$varnams(m)$
   ;;end if
 
-   res@xyLineColors       = colors(m)
-   pvals = ind(pdfvar.gt.0.d0)
-   xvals = pdfvar@bin_bounds(0:nbins-1)
-   if (m.eq.0) then
-     res@tiYAxisString          = "Probability (fraction)"
-     res@tiXAxisString          = xaxis
-     plot  = gsn_csm_xy(wks,xvals(pvals),pdfvar(pvals)*1.e-2,res)
-   else 
-     tmp = gsn_csm_xy(wks,xvals(pvals),pdfvar(pvals)*1.e-2,res)
-     overlay(plot,tmp)
-     delete(tmp)
-   end if
-   delete(pvals)
-   delete(xvals)
+;;   res@xyLineColors       = colors(m)
+;;   pvals = ind(pdfvar.gt.0.d0)
+;;   xvals = pdfvar@bin_bounds(0:nbins-1)
+;;   if (m.eq.0) then
+;;     res@tiYAxisString          = "Probability (fraction)"
+;;     res@tiXAxisString          = xaxis
+;;     plot  = gsn_csm_xy(wks,xvals(pvals),pdfvar(pvals)*1.e-2,res)
+;;   else 
+;;     tmp = gsn_csm_xy(wks,xvals(pvals),pdfvar(pvals)*1.e-2,res)
+;;     overlay(plot,tmp)
+;;     delete(tmp)
+;;   end if
+;;   delete(pvals)
+;;   delete(xvals)
 
   if (writenetcdf) then
-    if (m.eq.0) then
-      ncdf = addfile(fname_out , "c")
-    end if
-    ncdf->$varnams(m)$ = pdfvar
+    ncdf = addfile(fname_out , "c")
+    ncdf->$varnams(0)$ = pdfvarC
+    ncdf->$varnams(1)$ = pdfvarE
+    ncdf->$varnams(2)$ = pdfvarM
   end if
-
-   delete(pdfvar)
-
-  end do
 
 print("done with case " + n)
 
@@ -211,34 +245,14 @@ end do ;nfiles
 
   ;;;Create 3x3 physgrid grid with grid id numbers
   ;;;drawNDCGrid(wks)
-  yy = (/0.85,0.85,0.85,0.75,0.75,0.75,0.65,0.65,0.65/)
-  xx = (/0.65,0.75,0.85,0.65,0.75,0.85,0.65,0.75,0.85/)-0.005
-  do m = 0,nx-1
-    res_text@txFontColor	= colors(m)
-    gsn_text_ndc(wks,label(m),xx(m),yy(m),res_text)
-  end do
-  delete(xx)
-  delete(yy)
-
-  ;;;tic-tac-toe 
-  xx = (/0.6,0.9/)
-  yy = (/0.8,0.8/)
-  gsn_polyline_ndc(wks,xx,yy,res_lines) 
-  yy = (/0.7,0.7/)
-  gsn_polyline_ndc(wks,xx,yy,res_lines)
-
-  xx = (/0.7,0.7/)
-  yy = (/0.6,0.9/)
-  gsn_polyline_ndc(wks,xx,yy,res_lines)
-  xx = (/0.8,0.8/)
-  gsn_polyline_ndc(wks,xx,yy,res_lines)
-  delete(xx)
-  delete(yy)
-
-  ;;;square outline
-  xx = (/0.6,0.6,0.9,0.9,0.6/)
-  yy = (/0.6,0.9,0.9,0.6,0.6/)
-  gsn_polyline_ndc(wks,xx,yy,res_lines)
+;;  yy = (/0.85,0.85,0.85,0.75,0.75,0.75,0.65,0.65,0.65/)
+;;  xx = (/0.65,0.75,0.85,0.65,0.75,0.85,0.65,0.75,0.85/)-0.005
+;;  do m = 0,nx-1
+;;    res_text@txFontColor	= colors(m)
+;;    gsn_text_ndc(wks,label(m),xx(m),yy(m),res_text)
+;;  end do
+;;  delete(xx)
+;;  delete(yy)
 
   resP                  = True                   ; modify the panel plot
   resP@gsnFrame         = False                  ; don't advance panel plot
@@ -248,9 +262,9 @@ end do ;nfiles
   resP@gsnPanelFigureStringsPerimOn     = False
   resP@amJust           = "TopRight"
   resP@gsnPanelYWhiteSpacePercent = 5.
-  gsn_panel(wks,plot,(/1,1/),resP)               ; now draw as one plot
+  ;;gsn_panel(wks,plot,(/1,1/),resP)               ; now draw as one plot
 
-  frame(wks)
+  ;;frame(wks)
 
 end
 
