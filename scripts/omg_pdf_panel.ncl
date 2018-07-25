@@ -8,7 +8,7 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_csm.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl" 
 load "$NCARG_ROOT/lib/ncarg/nclscripts/esmf/ESMF_regridding.ncl"
-load "/glade/p/work/aherring/se_func_lib.ncl"
+load "/glade/work/aherring/se_func_lib.ncl"
 ;**************************************
 begin
 ;****************************************
@@ -20,7 +20,6 @@ begin
   g = 9.80616 ;m/s2
   p0   = 100000.
 
-  ;;; runs in HPSS
   dir = "/glade2/scratch2/aherring/"
   fname = (/"camtrunk_180208_QPC4_ne30_180302", \
 	    "camtrunk_180208_QPC4_ne30pg3_180302"/)
@@ -42,10 +41,8 @@ begin
 
   writenetcdf = False
   loadncdf = True
-  fname_in = (/"ne30pdflowmem-nbins200.nc","ne30pg3_pdfxnbins200.nc"/)
-  fname_out = "ne30pdflowmem-nbins200.nc"
-  varnams = (/"pdf1","pdf2","pdf3","pdf4","pdf5", \
-	      "pdf6","pdf7","pdf8","pdf9"/)
+  fname_in = (/"ne30pdflowmem-nbins200.nc","ne30pg3_pdfxnbins200_new.nc"/)
+  varnams = (/"pdf1","pdf2","pdf3"/)
 
 
   pltNam = "temp_pdf"
@@ -106,7 +103,9 @@ if (n.eq.0) then
 else if (n.eq.1) then
   writenetcdf = False
   loadncdf = True
-  nx = 9
+  nx = 3
+  varnams = (/"pdfC","pdfE","pdfM"/)
+
 end if
 end if
 
@@ -215,6 +214,15 @@ print("min bin " + pdfvar@bin_bound_min)
    pdfvar = ncdf->$varnams(m)$
   end if
 
+  if (m.eq.0) then
+    pdfvar0 = pdfvar
+  else if (m.eq.1) then
+    diff = pdfvar - pdfvar0
+    print(max(diff))
+    print(min(diff))
+  end if
+  end if
+
    if (n.eq.0) then
      res@trYMinF                = 1.e-8
      res@trXMinF                = -2.5
@@ -277,6 +285,9 @@ end do ;nfiles
   ;;;drawNDCGrid(wks)
   ;;xx = (/0.825,0.86,0.92,0.825,0.86,0.92,0.825,0.86,0.92/)
   ;;yy = (/0.65,0.65,0.65,0.605,0.605,0.605,0.55,0.55,0.55/)
+
+  colors = (/"red","green","red","green","blue","green","red","green","red"/)
+  colors4 = (/"red4","green4","red4","green4","blue4","green4","red4","green4","red4"/)
  
   dfv = .15/3.  
 
@@ -304,7 +315,7 @@ end do ;nfiles
   gsres                = True
   ;;gsres@gsFillOpacityF = 0.5
 
-  do m = 0,nx-1
+  do m = 0,8;;;nx-1
     print(m)
     gsres@gsFillColor    = colors(m)
     xbox = (/x0(m),x1(m),x2(m),x3(m),x4(m)/)+offx
@@ -422,9 +433,9 @@ end do ;nfiles
   resP@gsnFrame         = False                  ; don't advance panel plot
   resP@gsnPaperOrientation = "portrait"
   resP@gsnPanelFigureStringsFontHeightF = 0.02
-  ;resP@gsnPanelFigureStrings = (/ "a","b"/)
-  resP@gsnPanelFigureStringsPerimOn     = False
-  resP@amJust           = "TopRight"
+  resP@gsnPanelFigureStrings = (/ "a.","b."/)
+  resP@gsnPanelFigureStringsPerimOn     = True
+  resP@amJust           = "BottomLeft"
   resP@gsnPanelYWhiteSpacePercent = 5.
   gsn_panel(wks,plot,(/1,2/),resP)               ; now draw as one plot
   ;;;drawNDCGrid(wks)
