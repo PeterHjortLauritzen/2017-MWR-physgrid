@@ -224,7 +224,7 @@ In the mapping algorithm from physics to dynamics it was found (a) important to 
 
 \subsection{{\color{red}Moist Baroclinic Wave{}}}
 
-{\color{red}The moist baroclinic wave test case was included from the `CESM Simple Models' project \citep{CESM_SIMPLER_MODELS}, as part of the release of CESM2. It is effectively the dry test-case of \cite{UMJS2014QJRMS}, but initialized with moisture and coupled to the Kessler moist physics routine. A measure of the uncertainty of the reference solution, the $L_2$ difference norm between two high-resolution solutions using different dynamical cores, was presented in \cite{LetAl2018JAMES} and provided again here in Figure \ref{fig:norm}. The $L_2$ norm between CAM-SE and CAM-SE-CSLAM lies below the uncertainty of the reference solution, indicating their differences are insignificant. 
+{\color{red}The moist baroclinic wave test case was developed as part of the `CESM Simple Models' project \citep{CESM_SIMPLER_MODELS}, and included in the release of CESM2. It is effectively the dry test-case of \cite{UMJS2014QJRMS}, but initialized with moisture and coupled to the Kessler moist physics routine \citep{K1969MM,LetAl2018JAMES}. A measure of the uncertainty of the reference solution, the $L_2$ difference norm between two high-resolution solutions using different dynamical cores, was presented in \cite{LetAl2018JAMES} and provided again here in Figure \ref{fig:norm}. The $L_2$ norm between CAM-SE and CAM-SE-CSLAM lies below the uncertainty of the reference solution, indicating their differences are insignificant. 
 
 \begin{figure}[t]
 \noindent\includegraphics[width=15pc,angle=0]{figs/temp_l2.pdf}\\
@@ -232,7 +232,7 @@ In the mapping algorithm from physics to dynamics it was found (a) important to 
 \label{fig:norm}
 \end{figure}
 
-The flow field of the baroclinic wave test is used to drive the terminator "toy"-chemistry test of \cite{LCLVT2015GMD}. The terminator test is used to assess the tracer mass conservation properties in models through advecting a reactive species across the terminator line. The model is intialized with a specified, constant tracer mass everywhere ($4e-6 kg/kg$), such that if tracer mass is conserved, then the column integrated sum of the species should not vary in time. Figure \ref{fig:term} provides a snapshot of the mass-weighted, vertically integrated tracer mass at day 15. In CAM-SE, the tracer mass is not conserved by day 15 and the field is populated by overshoots and undershoots. In contrast, by day 15, CAM-SE-CSLAM still conserves tracer mass to within machine precision, consistent with the previous results of this test-case initialized with a dry baroclinic wave \citep{LTOUNGK2017MWR}.{}} 
+The flow field of the baroclinic wave test is used to drive the terminator "toy"-chemistry test of \cite{LCLVT2015GMD}. The terminator test is used to assess the tracer mass conservation properties in models through advecting a photo-reactive species across the terminator line. The model is intialized with a specified, constant tracer mass everywhere ($4e-6 kg/kg$), such that if tracer mass is conserved, then the column integrated sum of the species should not vary in time. Figure \ref{fig:term} provides a snapshot of the mass-weighted, vertically integrated tracer mass at day 15. In CAM-SE, the tracer mass is not conserved by day 15 and the field is populated by overshoots and undershoots. In contrast, by day 15, CAM-SE-CSLAM still conserves tracer mass to within machine precision, consistent with the previous results of this test-case initialized with a dry baroclinic wave \citep{LTOUNGK2017MWR}.{}} 
 
 \begin{figure}[t]
 \noindent\includegraphics[width=15pc,angle=0]{figs/terminator_iCLy.pdf}\\
@@ -259,30 +259,27 @@ As stated in Section \ref{sec:methods}, the mapping of the state to the physics 
 
 \begin{figure}[t]
 %\noindent\includegraphics[width=37pc,angle=0]{QPC4_bar_skk.pdf}\\
-\noindent\includegraphics[width=15pc,angle=0]{figs/QPC4_bar_skk.pdf}\\
+\noindent\includegraphics[width=19pc,angle=0]{figs/QPC4_bar_skk.pdf}\\
 \caption{Mean (left) and variance (right) of the low level temperature tendencies from the physical parameterizations on the GLL grid, with the $ne30np4$ configuration, (top row) and $ne30pg3$ configuration (bottom row), in a pair of year-long aqua-planet simulations after \cite{MWO2016JAMES}. Grid imprinting is observed along the element boundaries in $ne30np4$, but is absent from the $ne30pg3$ simulation.}
 \label{fig:tendency_imprint}
 \end{figure}
+
+\subsection{{\color{red}Held-Suarez with Topography{}}}
 
 Grid imprinting associated with the flow around obstacles is more problematic than that encountered on the aqua-planets. In order to diagnose grid imprinting due to topographic flow, an idealized held-suarez configuration \citep{HS1994} is outfitted with real world topography after \cite{FRETAL2000WMR,BETAL2006MWR}, and run for 1200 days in the $ne30np4$ and $ne30pg3$ configurations. Figure~\ref{fig:FHS-contours} shows the mean $\omega$ at two different vertical levels in the middle troposphere. The data are plotted on the control volume grid (e.g., Figure~\ref{fig:cv-grids}), in order to delineate whether a particular value is associated with an interior, edge or element boundary node. 
 
 At higher latitudes (e.g., the southern Andes), the flow is smooth, conforming reasonably to the underlying topography. At lower latitudes (within 20 to 30 degrees from the equator), over the Andes or the Himalayas, their is a clear preference for extrema to occur at the element boundaries (Figure~\ref{fig:FHS-contours}). The vertical structure of $\omega$ in regions of strong grid-imprinting indicates full-troposphere upward/downward motion (not shown). Grid imprinting is therefore more common in regions of weak stratification, such as occurs in the deep tropics, with forced up-slope flow facilitating the release of gravitational instability. Resolved updrafts/downdrafts often align with the element boundaries due to its systematically tighter pressure gradients, as explained in Figure~\ref{fig:se-schematic}. This type of grid imprinting has been previously indentified in CAM-SE in an AMIP configuration (Figure $7$ in \cite{gmdd-8-4623-2015}), manifesting as a band of precipitation near the foot of the Himalayas.   
 
-\begin{figure}[t]
+\begin{figure*}[t]
 %\noindent\includegraphics[width=37pc,angle=0]{FHS-contours-CROP.pdf}\\
-\noindent\includegraphics[width=15pc,angle=0]{figs/FHS-contours-CROP.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{figs/FHS-contours-CROP.pdf}\\
 \caption{Mean $\omega$ at two model levels in the middle troposphere, in a Held-Suarez configuration outfitted with real world topography. (Left) CAM-SE state on the GLL grid, $ne30np4$, (Middle) CAM-SE-CSLAM state on the GLL grid, $ne30np4$ and (Right) CAM-SE-CSLAM state on the physics grid, $ne30pg3$. The $\omega$ fields are computed from a 1200 day Held-Suarez simulation. The data are contoured according to a `cell fill' approach, in which the coupler grids (e.g, Figure~\ref{fig:cv-grids}) are used to delineate the vertices of the control volumes.} 
 \label{fig:FHS-contours}
-\end{figure}
+\end{figure*}
 
 Through the use of the quasi-equal area physics grid, grid imprinting due to topographic flow is reduced (Figures~\ref{fig:FHS-contours}). Figure~\ref{fig:FHS-contours} also shows the state in CAM-SE-CSLAM, but on the dynamical core grid. Arguably, grid imprinting due to topography in CAM-SE-CSLAM is not much of an improvement over CAM-SE, from the perspective of the dynamical core grid. Some regions (e.g., Andes) appear to have a larger grid imprinting signal, relative to CAM-SE, while other regions (e.g., Himalayas) indicate an improvement. The native topography lives on the physics grid, and the topography is mapped to the nodal points at run-time in CAM-SE-CSLAM. Mapping topography to the quadrature nodes ensures that no new extrema will be introduced to the boundary nodes, where the solution is least smooth. This effect can not be very large, since the grid noise is similar in CAM-SE and CAM-SE-CSLAM from the perspective of the dynamical core grid. From the perspective of the physics grid, the CAM-SE-CSLAM solution clearly mitigates the influence of grid-induced extrema on the state (Figure~\ref{fig:FHS-contours}). The reduction in grid imprinting in CAM-SE-CSLAM is therefore almost entirely a result of the smoothing effect of integrating the basis functions over the control volumes of the physics grid.
 
-% \subsection{First secondary heading}
-
-% \subsubsection{First tertiary heading}
-
-% \paragraph{First quaternary heading}
-
+\subsection{{\color{red}AMIP{}}}
 
 \section{Conclusions}\label{sec:conclusions}
 
