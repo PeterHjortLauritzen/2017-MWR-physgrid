@@ -17,13 +17,10 @@ begin
 
   rdir  = (/"/run/","/run/","/run/"/)
   dir   = "/scratch/cluster/aherring/"
-  fname = (/"camtrunk_180305_FHS94topoQ_ne30_180319_1200days", \
-	    "camtrunk_180305_FHS94topoQ_ne30pg3_180322_1200days", \
-	    "camtrunk_180305_FHS94topoQ_ne30pg3_180322_1200days"/)
 
-  fname = (/"camtrunk_180305_FHS94topo_ne30_180412_1200days", \
-            "camtrunk_180305_FHS94topo_ne30pg3_180412_1200days", \
-            "camtrunk_180305_FHS94topo_ne30pg3_180412_1200days"/)
+  fname = (/"camtrunk_180725_FHS94topo_ne30_ne30_mg17_pe384_180725", \
+            "camtrunk_180725_FHS94topo_ne30pg3_ne30pg3_mg17_pe384_180725", \
+            "camtrunk_180725_FHS94topo_ne30pg3_ne30pg3_mg17_pe384_180725"/)
 
   fdate = (/".cam.h1*",".cam.h1*",".cam.h1*"/)
   nfiles = dimsizes(fname)
@@ -49,6 +46,7 @@ begin
   transect = False ;;overlay transect
   streams = False ;;overlay streamline contours
   cellfill = True
+  circles = True
 
   plabels = False
   labels = new( (/2*nfiles/), string)
@@ -191,6 +189,12 @@ begin
 
    res@gsnContourZeroLineThicknessF = 3.5
 
+;;for cicles
+  resmkr                      = True         ; plot modifications desired
+  resmkr@gsMarkerIndex = 4
+  resmkr@gsMarkerSizeF = 90
+  resmkr@gsMarkerThicknessF = 4
+
 ;************
 ;Main Loop
 ;************
@@ -199,7 +203,7 @@ begin
  print("begin case "+n)
 
 if (cellfill) then
- sf = addfile("../../grids/" + sname(n),"r")
+ sf = addfile("/home/aherring/grids/" + sname(n),"r")
  latvert = sf->grid_corner_lat
  lonvert = sf->grid_corner_lon
  res@sfXCellBounds = lonvert
@@ -215,7 +219,7 @@ if (.not.loadncdf) then
  if (onemnth) then
    nfinish = nstart
  else
-   nfinish = 21;;;nf-1
+   nfinish = 23;;;nf-1
  end if
 
  print("load files...")
@@ -433,9 +437,18 @@ end if
    end if
  end if
 
+ if (circles) then
+   xxx = (/285.,90./)
+   yyy = (/-13.,27./)
+   pNam1 = unique_string("tmp")
+   pNam2 = unique_string("tmp")
+   plot@$pNam1$ = gsn_add_polymarker(wks,plot(andind),xxx(0),yyy(0),resmkr)
+   plot@$pNam2$ = gsn_add_polymarker(wks,plot(himind),xxx(1),yyy(1),resmkr)
+ end if
+
   ;;add titles
   txres = True
-  txres@txFontHeightF = 0.010
+  txres@txFontHeightF = 0.012
   txres@txJust = "CenterLeft"
   yy = (/ 0.915,0.915,0.915 /)
   xx = (/ 0.045,0.377,0.71 /)
