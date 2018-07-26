@@ -228,18 +228,17 @@ In the mapping algorithm from physics to dynamics it was found (a) important to 
 
 \begin{figure}[t]
 \noindent\includegraphics[width=15pc,angle=0]{figs/temp_l2.pdf}\\
-\caption{$L_2$ difference norms of the surface pressure field, $p_s$, in the moist baroclinic wave simulations. $L_2$ values lying within the yellow region fall below the estimate of the uncertainty in the reference solution (black curve), computed as the difference norm between two approximately $0.25^\circ$ resolution versions of CAM, the spectral-element and finite-volume dynamical cores}
+\caption{$L_2$ difference norms of the surface pressure field, $p_s$, in the moist baroclinic wave simulations. $L_2$ values lying within the yellow region fall below the estimate of the uncertainty in the reference solution (black curve), computed as the difference norm between two approximately $0.25^\circ$ resolution versions of CAM, the spectral-element and finite-volume (CAM-FV) dynamical cores.}
 \label{fig:norm}
 \end{figure}
 
-The flow field of the baroclinic wave test is used to drive the terminator "toy"-chemistry test of \cite{LCLVT2015GMD}. The terminator test is used to assess the tracer mass conservation properties in models through advecting a photo-reactive species across the terminator line. The model is intialized with a specified, constant tracer mass everywhere ($4e-6 kg/kg$), such that if tracer mass is conserved, then the column integrated sum of the species should not vary in time. Figure \ref{fig:term} provides a snapshot of the mass-weighted, vertically integrated tracer mass at day 15. In CAM-SE, the tracer mass is not conserved by day 15 and the field is populated by overshoots and undershoots. In contrast, by day 15, CAM-SE-CSLAM still conserves tracer mass to within machine precision, consistent with the previous results of this test-case initialized with a dry baroclinic wave \citep{LTOUNGK2017MWR}.{}} 
+The flow field of the baroclinic wave test is used to drive the terminator "toy"-chemistry test of \cite{LCLVT2015GMD}. The terminator test assesses tracer mass conservation properties in models through advecting a photo-reactive species across the terminator line. The model is intialized with a specified, constant total column tracer mass everywhere ($4e-6 kg/kg$), such that if tracer mass is conserved, then the mass of all species in a grid column should not vary in time. Figure \ref{fig:term} provides a snapshot of the column tracer mass at day 15. In CAM-SE, the tracer mass is not conserved by day 15 and the field is populated by overshoots and undershoots. In contrast, by day 15, CAM-SE-CSLAM still conserves tracer mass to within machine precision, consistent with the previous results of this test-case initialized with a dry baroclinic wave \citep{LTOUNGK2017MWR}.{}} 
 
 \begin{figure}[t]
 \noindent\includegraphics[width=15pc,angle=0]{figs/terminator_iCLy.pdf}\\
 \caption{Results of the terminator "toy"-chemistry test. Snapshot of the total column tracer mass at day 15 of the moist baroclinic wave test. (Top) CAM-SE, (Bottom) CAM-SE-CSLAM.}
 \label{fig:term}
 \end{figure}
- 
 
 \subsection{{\color{red}Aqua-planets{}}}
 
