@@ -236,38 +236,44 @@ The flow field of the baroclinic wave test is used to drive the terminator "toy"
 
 \begin{figure}[t]
 \noindent\includegraphics[width=15pc,angle=0]{figs/terminator_iCLy.pdf}\\
-\caption{}
+\caption{Results of the terminator "toy"-chemistry test. Snapshot of the total column tracer mass at day 15 of the moist baroclinic wave test. (Top) CAM-SE, (Bottom) CAM-SE-CSLAM.}
 \label{fig:term}
 \end{figure}
  
 
 \subsection{{\color{red}Aqua-planets{}}}
 
-Two year long aqua-planet simulations are performed using CAM-SE and CAM-SE-CSLAM. A plot similar to Figure \ref{fig:omega-se-volumes}a is constructed for the CAM-SE-CSLAM simulation, a probability density distribution of upward $\omega$ conditionally sampled based on location within the element. Similar to Figure \ref{fig:omega-se-volumes}a, Figure \ref{fig:omega-se-volumes}b divides up the control volumes by corner, edge and interior cells. Through the use of the quasi-equal area physics grid, the dynamical core state appears more or less independent of location within the element, a marked improvement over CAM-SE. Since the state is approximately independent of in-element location, it follows that the physics forcing, which is evaluated from the dynamical core state, may be expected to also show an improvment in grid-imprinting. 
+Two year long aqua-planet simulations are performed using CAM-SE and CAM-SE-CSLAM. {\color{red}Away from the grid-scale, the mean states in the two models are very similar. Figure~\ref{fig:zonal} shows the zonal-mean climatological precipitation rates in CAM-SE and CAM-SE-CSLAM. Considering how sensitive this aqua-planet configuration is to design choices in CAM-SE \citep{LetAl2018JAMES}, it is somewhat unexpected that the zonal means look so similar to one another.{}} 
 
-In contrast to the differences between the two model solutions in Figure \ref{fig:omega-se-volumes}, away from the grid-scale, the mean states are very similar. Figure~\ref{fig:zonal} shows the zonal-mean climatological precipitation rates in CAM-SE and CAM-SE-CSLAM. Considering how sensitive this aqua-planet configuration is to design choices in CAM-SE \citep{LetAl2018JAMES}, it is somewhat unexpected that the zonal means look so similar to one another. 
+\begin{figure}[t]
+\noindent\includegraphics[width=15pc,angle=0]{figs/temp_dzonal.pdf}\\
+\caption{Climatological zonal-mean total precipitation rate in the aqua-planets, computed from a pair of year long simulations.}
+\label{fig:zonal}
+\end{figure}
 
-The low-level, mean and variance of the physics tendencies in the two aqua-planet simulations are shown in Figure \ref{fig:tendency_imprint}. The mean states in the two models resemble one another, consistent with the similar climatological zonal mean precipitation rate in the simulations (not shown). The mean physics tendencies contains modest grid imprinting in the $ne30np4$ configuration (barely visisble near the storm-track regions), while in the variance field, grid imprinting is both ubiquitous and unmistakable. The variance is larger on boundary nodes, manifesting as a `stitching' pattern resembling the cube-sphere grid. In $ne30pg3$, the grid imprinting is all but eliminated based on the mean and variance of the physics tendencies (Figure~\ref{fig:tendency_imprint}), consistent with our expectation.
+A plot similar to Figure \ref{fig:omega-se-volumes}a is constructed for the CAM-SE-CSLAM simulation, a probability density distribution of upward $\omega$ conditionally sampled based on location within the element. {\color{red}Similar to Figure \ref{fig:omega-se-volumes}a, Figure \ref{fig:omega-se-volumes}b divides up the control volumes by corner, edge and interior cells. Through the use of the quasi-equal area physics grid, the dynamical core state appears more or less independent of location within the element, a marked improvement over CAM-SE. Since the state is approximately independent of in-element location, it follows that the physics forcing, which is evaluated from the dynamical core state, may be expected to also show an improvment in grid-imprinting.{}} 
+
+The low-level, mean and variance of the temperature tendencies from the physics in the two simulations are shown in Figure \ref{fig:tendency_imprint}. {\color{red}The mean states in the two models resemble one another, consistent with Figure~\ref{fig:zonal}.{}} The mean physics tendencies contains modest grid imprinting in CAM-SE (barely visisble near the storm-track regions), while in the variance field, grid imprinting is both ubiquitous and unmistakable. The variance is larger on boundary nodes, manifesting as a `stitching' pattern resembling the cube-sphere grid. In CAM-SE-CSLAM, the grid imprinting is all but eliminated based on the mean and variance of the physics tendencies (Figure~\ref{fig:tendency_imprint}), consistent with our expectation.
 
 As stated in Section \ref{sec:methods}, the mapping of the state to the physics grid and the reverse interpolation of physics tendencies to the GLL grid is not total energy conserving. CAM has a global energy fixer \citep{WOHTTV2015JAMES} which can be used to estimate the errors associated with the mapping algorithms. To do so, it is presumed that there are no compensating mapping errors in going to and from the physics and dynamics grids, and that CAM-SE-CSLAM and CAM-SE have the same energy dissipation rates. Under these assumptions the spurious globally integrated total energy errors due to the mapping algorithm is estimated to be approximately 0.0025 $W/m^2$ in the aqua-planet simulations. In comparison, the dynamical core total energy dissipation is on the order of 0.1 $W/m^2$ \citep{LetAl2018JAMES}. 
 
-\begin{figure*}[t]
+\begin{figure}[t]
 %\noindent\includegraphics[width=37pc,angle=0]{QPC4_bar_skk.pdf}\\
 \noindent\includegraphics[width=15pc,angle=0]{figs/QPC4_bar_skk.pdf}\\
 \caption{Mean (left) and variance (right) of the low level temperature tendencies from the physical parameterizations on the GLL grid, with the $ne30np4$ configuration, (top row) and $ne30pg3$ configuration (bottom row), in a pair of year-long aqua-planet simulations after \cite{MWO2016JAMES}. Grid imprinting is observed along the element boundaries in $ne30np4$, but is absent from the $ne30pg3$ simulation.}
 \label{fig:tendency_imprint}
-\end{figure*}
+\end{figure}
 
 Grid imprinting associated with the flow around obstacles is more problematic than that encountered on the aqua-planets. In order to diagnose grid imprinting due to topographic flow, an idealized held-suarez configuration \citep{HS1994} is outfitted with real world topography after \cite{FRETAL2000WMR,BETAL2006MWR}, and run for 1200 days in the $ne30np4$ and $ne30pg3$ configurations. Figure~\ref{fig:FHS-contours} shows the mean $\omega$ at two different vertical levels in the middle troposphere. The data are plotted on the control volume grid (e.g., Figure~\ref{fig:cv-grids}), in order to delineate whether a particular value is associated with an interior, edge or element boundary node. 
 
 At higher latitudes (e.g., the southern Andes), the flow is smooth, conforming reasonably to the underlying topography. At lower latitudes (within 20 to 30 degrees from the equator), over the Andes or the Himalayas, their is a clear preference for extrema to occur at the element boundaries (Figure~\ref{fig:FHS-contours}). The vertical structure of $\omega$ in regions of strong grid-imprinting indicates full-troposphere upward/downward motion (not shown). Grid imprinting is therefore more common in regions of weak stratification, such as occurs in the deep tropics, with forced up-slope flow facilitating the release of gravitational instability. Resolved updrafts/downdrafts often align with the element boundaries due to its systematically tighter pressure gradients, as explained in Figure~\ref{fig:se-schematic}. This type of grid imprinting has been previously indentified in CAM-SE in an AMIP configuration (Figure $7$ in \cite{gmdd-8-4623-2015}), manifesting as a band of precipitation near the foot of the Himalayas.   
 
-\begin{figure*}[t]
+\begin{figure}[t]
 %\noindent\includegraphics[width=37pc,angle=0]{FHS-contours-CROP.pdf}\\
 \noindent\includegraphics[width=15pc,angle=0]{figs/FHS-contours-CROP.pdf}\\
 \caption{Mean $\omega$ at two model levels in the middle troposphere, in a Held-Suarez configuration outfitted with real world topography. (Left) CAM-SE state on the GLL grid, $ne30np4$, (Middle) CAM-SE-CSLAM state on the GLL grid, $ne30np4$ and (Right) CAM-SE-CSLAM state on the physics grid, $ne30pg3$. The $\omega$ fields are computed from a 1200 day Held-Suarez simulation. The data are contoured according to a `cell fill' approach, in which the coupler grids (e.g, Figure~\ref{fig:cv-grids}) are used to delineate the vertices of the control volumes.} 
 \label{fig:FHS-contours}
-\end{figure*}
+\end{figure}
 
 Through the use of the quasi-equal area physics grid, grid imprinting due to topographic flow is reduced (Figures~\ref{fig:FHS-contours}). Figure~\ref{fig:FHS-contours} also shows the state in CAM-SE-CSLAM, but on the dynamical core grid. Arguably, grid imprinting due to topography in CAM-SE-CSLAM is not much of an improvement over CAM-SE, from the perspective of the dynamical core grid. Some regions (e.g., Andes) appear to have a larger grid imprinting signal, relative to CAM-SE, while other regions (e.g., Himalayas) indicate an improvement. The native topography lives on the physics grid, and the topography is mapped to the nodal points at run-time in CAM-SE-CSLAM. Mapping topography to the quadrature nodes ensures that no new extrema will be introduced to the boundary nodes, where the solution is least smooth. This effect can not be very large, since the grid noise is similar in CAM-SE and CAM-SE-CSLAM from the perspective of the dynamical core grid. From the perspective of the physics grid, the CAM-SE-CSLAM solution clearly mitigates the influence of grid-induced extrema on the state (Figure~\ref{fig:FHS-contours}). The reduction in grid imprinting in CAM-SE-CSLAM is therefore almost entirely a result of the smoothing effect of integrating the basis functions over the control volumes of the physics grid.
 
