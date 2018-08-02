@@ -193,7 +193,7 @@ begin
   resmkr                      = True         ; plot modifications desired
   resmkr@gsMarkerIndex = 4
   resmkr@gsMarkerSizeF = 90
-  resmkr@gsMarkerThicknessF = 4
+  resmkr@gsMarkerThicknessF = 3
 
 ;************
 ;Main Loop
