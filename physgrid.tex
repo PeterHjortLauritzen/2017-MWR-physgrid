@@ -16,10 +16,10 @@
 
 %% Start with one of the following:
 % DOUBLE-SPACED VERSION FOR SUBMISSION TO THE AMS
-\documentclass{ametsoc}
+%\documentclass{ametsoc}
 
 % TWO-COLUMN JOURNAL PAGE LAYOUT---FOR AUTHOR USE ONLY
-%\documentclass[twocol]{ametsoc}
+\documentclass[twocol]{ametsoc}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% To be entered only if twocol option is used
@@ -210,7 +210,7 @@ T^{(pg)}&=&\frac{}{A^{(pg)}\Delta p^{(pg)}}\int_{A^{(pg)}}T^{(gll)}\Delta p^{(gl
 \end{eqnarray}
 where $A^{(pg)}$ is the physics grid area. The integrals are numerically computed using the GLL quadrature rule {\color{red}{which exactly (to machine precision) integrates the basis functions over the $pg$ control volumes \citep{LTOUNGK2017MWR}}}. Thermal energy and dry air mass is conserved and the mapping is consistent. For the wind, which is a vector, the zonal and meridional wind components are mapped by transforming to contra-variant wind components, evaluating the basis function representation thereof at the equi-angular center of the physics grid control volumes and then transform{\color{red}ed{}} back to latitude-longitude coordinate system winds. All of the operations are local to the element and do not require communication between elements.
 
-The mapping of tracers is more problematic since the SE basis function representation is oscillatory although the shape-preserving filter guarantees shape-preservation at the GLL nodes \citep{GTS2014JCP}. To avoid this issue we use the CAM-SE-CSLAM version of CAM-SE \citep[Conservative Semi-Lagrangian Multi-tracer transport scheme][]{LTOUNGK2017MWR}, where tracers are advected on the $pg=3$ physics grid. Note that in CAM-SE-CSLAM the dry mass internally predicted by CSLAM, $\Delta p^{(cslam)}$, is, by design, equal to $\Delta p^{(gll)}$ integrated over the CSLAM/physics grid control volume \citep{LTOUNGK2017MWR}. Since the tracer grid and physics grids are co-located and $\Delta p^{(pg)}=\Delta p^{(cslam)}$ then the  mass conservation, correlation preservation, consistency and shape-preservation constraints are inherently fulfilled.
+The mapping of tracers is more problematic since the SE basis function representation is oscillatory although the shape-preserving filter guarantees shape-preservation at the GLL nodes \citep{GTS2014JCP}. To avoid this issue we use the CAM-SE-CSLAM version of CAM-SE \citep[Conservative Semi-Lagrangian Multi-tracer transport scheme][]{LTOUNGK2017MWR}, where tracers are advected on the $pg=3$ physics grid {\color{red}{using the inherently mass and linear-correlation preserving CSLAM algorithm}}. Note that in CAM-SE-CSLAM the dry mass internally predicted by CSLAM, $\Delta p^{(cslam)}$, is, by design, equal to $\Delta p^{(gll)}$ integrated over the CSLAM/physics grid control volume \citep{LTOUNGK2017MWR}. Since the tracer grid and physics grids are co-located and $\Delta p^{(pg)}=\Delta p^{(cslam)}$ then the  mass conservation, correlation preservation, consistency and shape-preservation constraints are inherently fulfilled.
 %
 \subsection{Mapping tendencies from physics grid (pg) to dynamics grid (GLL)}
 The physics tendencies are computed on the finite-volume physics grid and are denoted $f_T^{(pg)}$,$f_u^{(pg)}$,$f_v^{(pg)}$, and $f_m^{(pg)}$. Note that dry air mass is not modified by physics and hence there is no tendency for dry mass,  $f_{\Delta p}\equiv 0$. Also, it is important to map tendencies and not state from the physics grid to GLL grid otherwise one will get spurious tendencies from mapping errors when the actual physics tendency is zero (unless a reversible map is used).
@@ -254,7 +254,7 @@ In the SE integration of the equations of motion on the GLL grid the water speci
 \label{fig:norm}
 \end{figure*}
 
-{\color{red}The flow field of the baroclinic wave test is used to drive the terminator "toy"-chemistry test of \cite{LCLVT2015GMD}. The terminator test is used to assess the tracer mass conservation properties for linear-correlated reactive species being advected across the terminator line. The model is initialized with two species for which their total mass is constant everywhere (constant surface pressure and constant mixing ratio $4\times 10^{-6}$ kg/kg), such that if tracer mass is conserved, then the columns mass weighted sum of the species should not vary in time. Figure \ref{fig:term} provides a snapshot of the mass-weighted, vertically integrated tracer concentration at day 15. In CAM-SE, the tracer mass is not conserved by day 15 and the field is populated by overshoots and undershoots. In contrast, by day 15, CAM-SE-CSLAM still conserves tracer mass to within machine precision, consistent with the previous results of this test-case initialized with a dry baroclinic wave \citep{LTOUNGK2017MWR}.{}} 
+{\color{red}The flow field of the baroclinic wave test is used to drive the terminator "toy"-chemistry test of \cite{LCLVT2015GMD}. The terminator test is used to assess the assess linear-correlation preservation using two reactive species being advected across the terminator line. The model is initialized with two species for which the weighted sum is a constant (constant surface pressure and constant mixing ratio $4\times 10^{-6}$ kg/kg), such that if tracer correlations are preserved, then the column-integrated weighted sum of the species should not vary in time. Figure \ref{fig:term} provides a snapshot of the vertically integrated weighted sum of species at day 15. In CAM-SE, the tracer correlations are not preserved at day 15 and the field is populated by overshoots and undershoots. In contrast, by day 15, CAM-SE-CSLAM still conserves tracer correlations to within machine precision, consistent with the previous results of this test-case initialized with a dry baroclinic wave \citep{LTOUNGK2017MWR}.} 
 
 \begin{figure*}[t]
 \begin{center}
