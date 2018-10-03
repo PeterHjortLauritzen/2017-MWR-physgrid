@@ -199,7 +199,7 @@ The dynamics state is defined on the GLL grid in terms of temperature $T^{(gll)}
 \item conservation of scalar quantities such as mass and dry thermal energy,\label{prop1}
 \item for tracers; shape-preservation (monotonicity), i.e., the mapping method must not introduce new extrema in the interpolated field, in particular, negatives,\label{prop2}
 \item consistency, i.e., the mapping preserves a constant,\label{prop3}
-\item linear correlation preservation.
+\item linear correlation preservation{\color{red}{, i.e. preserves linear stoichiometric relationships between two reactive species}}
 \end{enumerate}
 Other properties that may be important, but not pursued here, includes total energy conservation and axial angular momentum conservation. Total energy is a quadratic quantity that is inherently difficult to conserve unless one maps total energy requiring one to diagnose either temperature or momentum components. For example, enforcing total energy conservation locally using, e.g., \citet{L2004MWR}'s method where total energy and velocity components are remapped and temperature is a derived variable, has proven problematic (C. Chen, personal communication). Similarly conservation of axial angular momentum is problematic. Conservation of angular momentum requires one to interpolate the zonal and meridional components of momentum which creates large errors near the poles. To avoid the pole problem we interpolate contra-variant components of the momentum vector, which violates axial angular momentum conservation.
 
@@ -300,7 +300,7 @@ As stated in Section \ref{sec:methods}, the mapping of the state to the physics 
 
 Grid imprinting associated with the flow around obstacles is more problematic than that encountered on the aqua-planets. In order to diagnose grid imprinting due to topographic flow, an idealized Held-Suarez configuration \citep{HS1994} is outfitted with real world topography after \cite{FRETAL2000WMR,BETAL2006MWR}, and run for two years. Figure~\ref{fig:FHS-contours} shows the mean $\omega$ at two different vertical levels in the middle troposphere. {The data are presented as a raster plot on their respective unstructured grids, in order to delineate whether a particular value is associated with an interior, edge or element boundary node. 
 
-At higher latitudes (e.g., the southern Andes), the flow is smooth, conforming reasonably to the underlying topography. At lower latitudes (within 20 to 30 degrees from the equator), over the Andes or the Himalayas, their is a clear preference for extrema to occur at the element boundaries (Figure~\ref{fig:FHS-contours}). The vertical structure of $\omega$ in regions of strong grid-imprinting indicates full-troposphere upward/downward motion (not shown). Grid imprinting is therefore more common in regions of weak stratification, such as occurs in the deep tropics, with forced up-slope flow facilitating the release of gravitational instability. Resolved updrafts/downdrafts often align with the element boundaries due to its systematically tighter pressure gradients. 
+At higher latitudes (e.g., the southern Andes), the flow is smooth, conforming reasonably to the underlying topography. At lower latitudes (within 20 {\color{red}{and 30 degrees from the equator for the Andes and the Himalayas, respectively}}), over the Andes or the Himalayas, there is a clear preference for extrema to occur at the element boundaries (Figure~\ref{fig:FHS-contours}). The vertical structure of $\omega$ in regions of strong grid-imprinting indicates full-troposphere upward/downward motion (not shown). Grid imprinting is therefore more common in regions of weak stratification, such as occurs in the deep tropics, with forced up-slope flow facilitating the release of gravitational instability. Resolved updrafts/downdrafts often align with the element boundaries due to its systematically tighter pressure gradients. 
 
 \begin{figure*}[t]
 %\noindent\includegraphics[width=37pc,angle=0]{FHS-contours-CROP.pdf}\\
@@ -330,7 +330,7 @@ To assist in identifying whether a particular precipitation pattern is spurious,
 %\noindent\includegraphics[width=20pc,angle=0]{figs/AMIP_global.pdf}\\
 %\noindent\includegraphics[width=20pc,angle=0]{AMIP_global.pdf}\\
 \end{center}
-\caption{Climatological total precipitation rate computed from the final 19 years of a suite of 20 year long AMIP simulations, using CAM-SE (ne30np4), CAM-SE-CSLAM (ne30np3) and CAM-FV (f09). The top plot is an observational product, the gridded GPCP climatological precipitation dataset.}
+\caption{Climatological total precipitation rate computed from the final 19 years of a suite of 20 year long AMIP simulations, using CAM-SE (ne30np4), CAM-SE-CSLAM (ne30pg3) and CAM-FV (f09). The top plot is an observational product, the gridded GPCP climatological precipitation dataset.}
 \label{fig:AMIP-global}
 \end{figure*}
 
