@@ -199,7 +199,7 @@ The dynamics state is defined on the GLL grid in terms of temperature $T^{(gll)}
 \item conservation of scalar quantities such as mass and dry thermal energy,\label{prop1}
 \item for tracers; shape-preservation (monotonicity), i.e., the mapping method must not introduce new extrema in the interpolated field, in particular, negatives,\label{prop2}
 \item consistency, i.e., the mapping preserves a constant,\label{prop3}
-\item linear correlation preservation{\color{red}{, i.e. if field A is a linear function of B, this relationship is still preserved \citep[see, e.g, equation 5 in][]{LT2011QJR}}}
+\item linear correlation preservation{\color{red}{, i.e., if field A is a linear function of B, this relationship is still preserved \citep[see, e.g, equation 5 in][]{LT2011QJR}}}
 \end{enumerate}
 Other properties that may be important, but not pursued here, includes total energy conservation and axial angular momentum conservation. Total energy is a quadratic quantity that is inherently difficult to conserve unless one maps total energy requiring one to diagnose either temperature or momentum components. For example, enforcing total energy conservation locally using, e.g., \citet{L2004MWR}'s method where total energy and velocity components are remapped and temperature is a derived variable, has proven problematic (C. Chen, personal communication). Similarly conservation of axial angular momentum is problematic. Conservation of angular momentum requires one to interpolate the zonal and meridional components of momentum which creates large errors near the poles. To avoid the pole problem we interpolate contra-variant components of the momentum vector, which violates axial angular momentum conservation.
 
