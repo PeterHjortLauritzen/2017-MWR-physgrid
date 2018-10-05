@@ -5,7 +5,7 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_code.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_csm.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/esmf/ESMF_regridding.ncl"
-load "/glade/p/work/aherring/se_func_lib.ncl"
+load "/glade/work/aherring/CESM2/arh-git-scripts/ncl/se_func_lib.ncl"
 ;**************************************
 begin
 ;****************************************
@@ -15,8 +15,8 @@ begin
   Re = 6371.22
 
   dir   = "/glade/scratch/aherring/"
-  fname = (/"physgrid_180401_QPC4_ne30_180411", \
-	    "physgrid_180401_QPC4_ne30pg3_180411"/)
+  fname = (/"camtrunk_180925_QPC4_ne30_180928", \
+	    "camtrunk_180925_QPC4_ne30pg3_180928"/)
   fdate = (/".cam.h2*",".cam.h2*"/)
   nfiles = dimsizes(fname)
 
@@ -30,6 +30,7 @@ begin
   varlev = 23 ;; 28-1 for QPC6; 24-1 for QPC4
   LAT = (/"lat","lat_d"/)
   LON = (/"lon","lon_d"/)
+  AREA = (/"area","area_d"/)
   factor = 1.
 
   manlevs = True
@@ -52,14 +53,16 @@ begin
   	     "Variance of ~F10~f~B~T~N~~F21~ on GLL grid (K~S~2~N~/s~S~2~N~), 930 hPa level"/)
 
   writencdf = False
-  fname_out = "bar_skk_mwr_paper-QPC4.nc"
+  fname_out = "bar_skk_thirdrevise-QPC4.nc"
   barnams = (/"bar1","bar2"/)
   skknams = (/"skk1","skk2"/)
   latnams = (/"lat1d1","lat1d2"/)
   lonnams = (/"lon1d1","lon1d2"/)
+  gbarnam = (/"gbar1","gbar2"/)
+  gskknam = (/"gskk1","gskk2"/)
 
   loadncdf = True
-  fname_in = "bar_skk_mwr_paper-QPC4.nc"
+  fname_in = "bar_skk_mwr_paper-QPC4_tmp.nc"
 
   plotName = "temp_paper"
 
@@ -151,6 +154,7 @@ if (.not.loadncdf) then
      attr = var(0,:,:)
    else
      var = f[:]->$VAR(n)$(:,varlev,:)
+     area = f[0]->$AREA(n)$
    end if
  else
    var = f[:]->$VAR(n)$
@@ -190,6 +194,19 @@ if (.not.loadncdf) then
   delete(attr)
  end if
  delete(var)
+
+ print("computing global means...")
+ garea = dim_sum(area)
+
+ gbar  = dim_sum(bar*area)
+ gbar  = gbar/garea
+
+ gskk  = dim_sum(skk*area)
+ gskk  = gskk/garea
+
+ print("gbar = " + gbar)
+ print("gskk = " + gskk)
+
 else
 ;;;only works for latlon = False
   if (n.eq.0) then
@@ -199,7 +216,22 @@ else
   skk = ncdf->$skknams(n)$
   lat1d = ncdf->$latnams(n)$
   lon1d = ncdf->$lonnams(n)$
+  gbar = ncdf->$gbarnam(n)$
+  gskk = ncdf->$gskknam(n)$
 end if
+
+ print("gbar = " + gbar)
+ print("gskk = " + gskk)
+
+ if (n.eq.0) then
+   bar@long_name = "Global Mean = 9.9104e-06 K/s"
+   skk@long_name = "Global Mean = 1.0091e-09 K~S~2~N~/s~S~2~N~"
+ else if (n.eq.1) then
+   bar@long_name = "Global Mean = 9.7867e-06 K/s" 
+   skk@long_name = "Global Mean = 0.9437e-09 K~S~2~N~/s~S~2~N~"
+ end if
+ end if
+
 
  print("plotting...")
 
@@ -265,6 +297,8 @@ print("Min skk " + min(skk))
    ncdf->$skknams(n)$ = skk
    ncdf->$latnams(n)$ = lat1d
    ncdf->$lonnams(n)$ = lon1d
+   ncdf->$gbarnam(n)$ = gbar
+   ncdf->$gskknam(n)$ = gskk
  end if
 
 delete(bar)
