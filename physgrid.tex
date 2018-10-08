@@ -126,9 +126,9 @@ An increasing number of numerical methods publications in the atmospheric scienc
 %\begin{figure}[t]
 \begin{figure*}[t]
 \begin{center}
-%\noindent\includegraphics[width=37pc,angle=0]{gll.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{gll.pdf}\\
 %\noindent\includegraphics[width=15pc,angle=0]{figs/quadrature-fig/gll.pdf}\\
-\noindent\includegraphics[width=37pc,angle=0]{figs/quadrature-fig/gll.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{figs/quadrature-fig/gll.pdf}\\
 \end{center}
 \noindent
 \caption{Example of CAM-SE GLL quadrature grids, marked with red filled circles, (a \& c) on the cubed-sphere and (b \& d) in an element. (a)-(b) and (c)-(d) use $4\times 4$ ($np=4$) and $8\times 8$ ($np=8$) GLL quadrature points in each element, respectively. (a) and (c) have the same average grid-spacing at the Equator (7.5$^\circ$) which is obtained by using (a) $4\times 4$ ($ne=4$) and (b) $2\times 2$ ($ne=2$) elements on each cubed-sphere face/panel, respectively. The element boundaries are marked with thick light blue lines. The grid configurations shown on (a) and (c) are referred to as $ne4np4$ and $ne2np8$, respectively.}
@@ -149,8 +149,8 @@ It is the purpose of this paper to document the implementation of an entirely se
 Figure~\ref{fig:se-schematic} is a schematic illustrating in one-dimension how grid-imprinting is enabled by the physics, when the dynamical core is built using high-order Galerkin methods. The schematic depicts a time-step, starting from smooth initial conditions (Figure~\ref{fig:se-schematic}a), and subsequently advancing the dynamics one Runge-Kutta time-step (Figure~\ref{fig:se-schematic}b). Since the boundary nodes of adjacent elements overlap one-another, there are now two solutions for each boundary node. The DSS operator, effectively a numerical flux applied to the element boundaries such that overlapping nodal values agree, is applied (Figure~\ref{fig:se-schematic}c), rendering the solutions at element boundaries $C^0$; less-smooth than neighboring $C^{\infty}$ interior nodes. An element boundary discontinuity may be exacerbated if, e.g., the physics updates the state at an element boundary (Figure~\ref{fig:se-schematic}d,e), resulting in characteristically tighter gradients on the boundary nodes compared to if the physics forcing were applied to an interior node (Figure~\ref{fig:se-schematic}g,h).   
 
 \begin{figure*}[t]
-%\noindent\includegraphics[width=38pc,angle=0]{se-schematic-arh-CROP.pdf}\\
-\noindent\includegraphics[width=38pc,angle=0]{figs/se-schematic-arh-CROP.pdf}\\
+\noindent\includegraphics[width=38pc,angle=0]{se-schematic-arh-CROP.pdf}\\
+%\noindent\includegraphics[width=38pc,angle=0]{figs/se-schematic-arh-CROP.pdf}\\
 \caption{A one-dimensional schematic showing the relationship between the basis functions, the quadrature nodes and the proposed physics grid, over the coarse of a time-step. The filled circles are the GLL quadrature points in each element, which are connected by a Lagrange polynomials basis (curves). (a) Smooth initial condition are (b) advanced by the dynamics one Runge-Kutta step (blue), and (c) shows the solution after applying the DSS operator. Applying (d) grid-scale forcing to an element boundary node, (e) the basis representation is clearly $C^0$ at the element boundary. In contrast, (d) applying grid-scale forcing to an interior node (e) results in a smooth, $C^{\infty}$ continuous field. (f),(i) Vertical bars pertain to the values on the physics grid, found through integrating the basis functions over the control volumes.}
 \label{fig:se-schematic}
 \end{figure*}
@@ -159,9 +159,9 @@ To test the degree to which nodal solutions depend on within-element position, a
 
 \begin{figure*}[t]
 \begin{center}
-%\noindent\includegraphics[width=37pc,angle=0]{temp_pdf_200bins_30min_trX25min.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{temp_pdf_200bins_30min_trX25min.pdf}\\
 %\noindent\includegraphics[width=18pc,angle=0]{figs/temp_pdf_200bins_30min_trX25min.pdf}\\
-\noindent\includegraphics[width=37pc,angle=0]{figs/temp_pdf_200bins_30min_trX25min.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{figs/temp_pdf_200bins_30min_trX25min.pdf}\\
 \end{center}
 \caption{Probability density distribution of instantaneous upward $\omega$ in a pair of aqua-planet simulations using CAM4 physics. Figure is constructed from one year of six hourly data, at all vertical levels. (a) $ne30np4$ configuration conditionally sampled for interior, edge and corner node control volumes, and similarly (b) for the $ne30pg3$ configuration. {\color{red}{The curves in (b) are overlain in (a) in grey, and similarly the curves in (a) are overlain in (b).}} Note the consistently larger magnitude $\omega$ for boundary nodes compared with interior nodes in (a), and that the bias is substantially reduced through mapping to a quasi-equal area physics grid.}\label{fig:omega-se-volumes}
 \end{figure*}
@@ -171,8 +171,8 @@ If the conventional physics-dynamics coupling paradigm is applied to CAM-SE, the
 %\begin{figure}[t]
 \begin{figure*}[t]
 \begin{center}
-%\noindent\includegraphics[width=37pc,angle=0]{se_gll_cv_grid.eps}\\
-\noindent\includegraphics[width=15pc,angle=0]{figs/se_gll_cv_grid.eps}\\
+\noindent\includegraphics[width=37pc,angle=0]{se_gll_cv_grid.eps}\\
+%\noindent\includegraphics[width=15pc,angle=0]{figs/se_gll_cv_grid.eps}\\
 %\noindent\includegraphics[width=37pc,angle=0]{figs/se_gll_cv_grid.eps}\\
 \end{center}
 \caption{An example of control volumes constructed around GLL quadrature points ($ne4np4$) so that the spherical area of the control volumes exactly match the quadrature weight multiplied by the metric factor.}
@@ -189,9 +189,9 @@ Here we focus on CAM-SE, however, in principle the methods apply to any element-
 %\begin{figure}[t]
 \begin{figure*}[t]
 \begin{center}
-%\noindent\includegraphics[width=37pc,angle=0]{np4_pg3.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{np4_pg3.pdf}\\
 %\noindent\includegraphics[width=15pc,angle=0]{figs/np4_pg3.pdf}\\
-\noindent\includegraphics[width=37pc,angle=0]{figs/np4_pg3.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{figs/np4_pg3.pdf}\\
 \end{center}
 \caption{A schematic illustration of an element, indicating the relationship between (left) the dynamical core grid, and (right) the proposed quasi-equal area physics grid. The physics grid contains $pg\times pg=3\times 3$ grid cells in each element.}
 \label{fig:np4_pg3}
@@ -253,8 +253,8 @@ The moist baroclinic wave test case was developed as part of the `CESM Simple Mo
 \begin{figure*}[t]
 \begin{center}
 %\noindent\includegraphics[width=15pc,angle=0]{figs/temp_l2.pdf}\\
-\noindent\includegraphics[width=37pc,angle=0]{figs/temp_l2.pdf}\\
-%\noindent\includegraphics[width=37pc,angle=0]{temp_l2.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{figs/temp_l2.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{temp_l2.pdf}\\
 \end{center}
 \caption{$L_2$ difference norms of the surface pressure field, $p_s$, in the moist baroclinic wave simulations. $L_2$ values lying within the yellow region fall below the estimate of the uncertainty in the reference solution (black curve), computed as the difference norm between two approximately $0.25^\circ$ resolution versions of CAM, the spectral-element and finite-volume (CAM-FV) dynamical cores.}
 \label{fig:norm}
@@ -267,8 +267,8 @@ The flow field of the baroclinic wave test is used to drive the terminator ``toy
 \begin{figure*}[t]
 \begin{center}
 %\noindent\includegraphics[width=15pc,angle=0]{figs/terminator_iCLy.pdf}\\
-\noindent\includegraphics[width=37pc,angle=0]{figs/terminator_iCLy.pdf}\\
-%\noindent\includegraphics[width=37pc,angle=0]{terminator_iCLy.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{figs/terminator_iCLy.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{terminator_iCLy.pdf}\\
 \end{center}
 \caption{Results of the terminator ``toy"-chemistry test. Snapshot of the total column integrated, weighted sum of the species,$\ \left< Cl_y \right> = \left< Cl \right> + \left< 2Cl_2 \right>$, in kg/kg, at day 15 of the moist baroclinic wave test. (Top) CAM-SE, (Bottom) CAM-SE-CSLAM.}
 \label{fig:term}
@@ -283,8 +283,8 @@ Two year long aqua-planet simulations are performed using CAM-SE and CAM-SE-CSLA
 \begin{figure*}[t]
 \begin{center}
 %\noindent\includegraphics[width=15pc,angle=0]{figs/temp_dzonal.pdf}\\
-\noindent\includegraphics[width=37pc,angle=0]{figs/temp_dzonal.pdf}\\
-%\noindent\includegraphics[width=37pc,angle=0]{temp_dzonal.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{figs/temp_dzonal.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{temp_dzonal.pdf}\\
 \end{center}
 \caption{Climatological zonal-mean total precipitation rate in the aqua-planets, computed from a pair of year long simulations.}
 \label{fig:zonal}
@@ -300,9 +300,9 @@ The low-level, mean and variance of the temperature tendencies from the physics,
 As stated in Section \ref{sec:methods}, the mapping of the state to the physics grid and the reverse interpolation of physics tendencies to the GLL grid is not total energy conserving. CAM has a global energy fixer \citep{WOHTTV2015JAMES} which can be used to estimate the errors associated with the mapping algorithms. To do so, it is presumed that there are no compensating mapping errors in going to and from the physics and dynamics grids, and that CAM-SE-CSLAM and CAM-SE have the same energy dissipation rates. Under these assumptions the spurious globally integrated total energy errors due to the mapping algorithm is estimated to be approximately 0.0025 $W/m^2$ in the aqua-planet simulations. In comparison, the dynamical core total energy dissipation is on the order of 0.1 $W/m^2$ \citep{LetAl2018JAMES}. 
 
 \begin{figure*}[t]
-%\noindent\includegraphics[width=37pc,angle=0]{QPC4_bar_skk.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{QPC4_bar_skk.pdf}\\
 %\noindent\includegraphics[width=19pc,angle=0]{figs/QPC4_bar_skk.pdf}\\
-\noindent\includegraphics[width=37pc,angle=0]{figs/QPC4_bar_skk.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{figs/QPC4_bar_skk.pdf}\\
 \caption{Mean (left) and variance (right) of the low level temperature tendencies from the physical parameterizations on the GLL grid, with the $ne30np4$ configuration, (top row) and $ne30pg3$ configuration (bottom row), in a pair of year-long aqua-planet simulations. Grid imprinting is observed along the element boundaries in $ne30np4$, but is absent from the $ne30pg3$ simulation.}
 \label{fig:tendency_imprint}
 \end{figure*}
@@ -327,8 +327,8 @@ Through the use of the quasi-equal area physics grid, grid imprinting due to top
 A pair of 20 year-long AMIP type simulations are performed, using CAM, version 6 physics package (CAM6) and using perpetual year 2000 SST boundary conditions ($F2000climo$ compset in CESM2.0; \url{https://doi.org/10.5065/D67H1H0V}). Figure~\ref{fig:AMIP-region} shows the climatological precipitation fields in CAM-SE (left) and CAM-SE-CSLAM (middle), and over the same mountainous regions as in Figure~\ref{fig:FHS-contours}. The plots have some similar features to the $\omega$ field in the Held-Suarez runs; the greater variance at lower latitudes, and on the windward side of the mountains are broadly similar. CAM-SE-CSLAM has a lower spatial variance, e.g., the lack of extrema over the Andes at about $15^\circ$ S compared to CAM-SE, and the grid-scale precipitation peak over the Himalayas at about $30^\circ$ N. The difference plot (Figure~\ref{fig:AMIP-region}; right panel) is more broadly populated by blue, purple and white contours, indicating that CAM-SE has, in general, larger magnitude precipitation rates over high topography. The difference plots also highlight a couple of zonally aligned strips of anomalous precipitation, in particular, near the foot of the Himalayas in CAM-SE. These bands are in the same location as the bands of precipitation identified in CAM-SE in \cite{gmdd-8-4623-2015} (their Figure 7), but using CAM, version 5 physics, of which they argue are spurious in nature. 
 
 \begin{figure*}[t]
-%\noindent\includegraphics[width=37pc,angle=0]{AMIP_regional.pdf}\\
-\noindent\includegraphics[width=37pc,angle=0]{figs/AMIP_regional.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{AMIP_regional.pdf}\\
+%\noindent\includegraphics[width=37pc,angle=0]{figs/AMIP_regional.pdf}\\
 \caption{Climatological total precipitation rate (in mm/day) computed from the final 19 years of a pair of 20 year long AMIP type simulations. (Left) CAM-SE, (middle) CAM-SE-CSLAM and (Right) their differences.}
 \label{fig:AMIP-region}
 \end{figure*}
@@ -338,9 +338,9 @@ To assist in identifying whether a particular precipitation pattern is spurious,
 \begin{figure}[t]
 %\begin{figure*}[t]
 \begin{center}
-\noindent\includegraphics[width=18pc,angle=0]{figs/AMIP_global.pdf}\\
+%\noindent\includegraphics[width=18pc,angle=0]{figs/AMIP_global.pdf}\\
 %\noindent\includegraphics[width=20pc,angle=0]{figs/AMIP_global.pdf}\\
-%\noindent\includegraphics[width=20pc,angle=0]{AMIP_global.pdf}\\
+\noindent\includegraphics[width=20pc,angle=0]{AMIP_global.pdf}\\
 \end{center}
 \caption{Climatological total precipitation rate computed from the final 19 years of a suite of 20 year long AMIP simulations, using CAM-SE (ne30np4), CAM-SE-CSLAM (ne30pg3) and CAM-FV (f09). The top plot is an observational product, the gridded GPCP climatological precipitation dataset.}
 \label{fig:AMIP-global}
@@ -379,9 +379,9 @@ where $\Delta \alpha^{(pg)}=\Delta \beta^{(pg)}=\frac{\Delta \alpha^{(elem)}}{pg
 
 %\begin{figure}[t]
 \begin{figure*}[t]
-%\noindent\includegraphics[width=37pc,angle=0]{mapping.pdf}\\
 \begin{center}
-\noindent\includegraphics[width=20pc,angle=0]{figs/mapping/mapping.pdf}\\
+\noindent\includegraphics[width=37pc,angle=0]{mapping.pdf}\\
+%\noindent\includegraphics[width=20pc,angle=0]{figs/mapping/mapping.pdf}\\
 \end{center}
 \caption{Schematic of the coordinate system in which the dimensionally split cubic Lagrange interpolation is computed.  The physics grid centers are marked with asterisks and the GLL points, we are interpolating to, with solid filled circles. The element in which the GLL points are located is  bounded by  thick black lines and located in the lower left corner of a panel. The stippled lines mark the boundaries of the remaining elements. For simplicity we are using the normalized coordinate centered at the element on which the GLL points we are interpolating to are located. Note that the coordinates for points on neighboring panels (using a different local coordinate system) must be transformed to the coordinate system of the element in question.}
 \label{fig:mapping}
