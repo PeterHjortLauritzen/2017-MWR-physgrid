@@ -6,7 +6,7 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_csm.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl" 
 load "$NCARG_ROOT/lib/ncarg/nclscripts/esmf/ESMF_regridding.ncl"
-load "/glade/p/work/aherring/se_func_lib.ncl"
+load "/glade/work/aherring/CESM2/arh-git-scripts/ncl/se_func_lib.ncl"
 ;**************************************
 begin
 ;****************************************
@@ -24,8 +24,8 @@ begin
   p0   = 100000.
 
   ;;;run is in HPSS
-  dir = "/glade2/scratch2/aherring/"
-  fname = (/"physgrid_180401_QPC4_ne30pg3_ne30pg3_mg17_180706"/)
+  dir = "/glade/scratch/aherring/"
+  fname = (/"camtrunk_180925_QPC4_ne30pg3_180928"/)
   fdate = ".cam.h2.*"
   nfiles = dimsizes(fname)
 
@@ -34,16 +34,16 @@ begin
   regrid = False
   factor = 1.
 
-  nbins  = 200
-  optpdf          = False
-  optpdf@bin_min  = -3.042633771896362;;;-3.93936
-  optpdf@bin_max  = -2.236479404449376e-11;;;0.
+  nbins  = 100
+  optpdf          = True
+  optpdf@bin_min  = -3.0;;;;;-3.042633771896362;;;-3.93936
+  optpdf@bin_max  = 0.  ;;;-2.236479404449376e-11;;;0.
   optpdf@bin_spacing = (optpdf@bin_max-optpdf@bin_min)/nbins
 
   xaxis = "~F33~w~F21~ (Pa/s)"
 
   writenetcdf = True
-  fname_out = "ne30pg3_pdfxnbins200_new.nc"
+  fname_out = "ne30pg3_pdf-nbins100_min30.nc"
   varnams = (/"pdfC","pdfE","pdfM"/)
 
   pltNam = "temp"

@@ -6,7 +6,7 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_csm.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/esmf/ESMF_regridding.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl"
-load "/home/aherring/ncl-scripts/se_func_lib.ncl"
+load "/glade/work/aherring/CESM2/arh-git-scripts/ncl/se_func_lib.ncl"
 ;**************************************
 begin
 ;****************************************
@@ -19,7 +19,6 @@ begin
   dir   = "/scratch/cluster/aherring/"
 
   fname = (/"camtrunk_180725_FHS94topo_ne30_ne30_mg17_pe384_180725", \
-            "camtrunk_180725_FHS94topo_ne30pg3_ne30pg3_mg17_pe384_180725", \
             "camtrunk_180725_FHS94topo_ne30pg3_ne30pg3_mg17_pe384_180725"/)
 
   fdate = (/".cam.h1*",".cam.h1*",".cam.h1*"/)
@@ -29,16 +28,16 @@ begin
   nstart = 1
 
   latlon = False
-  VAR = (/"U","U","U"/)
-  VAR = (/"OMEGA","OMEGA_gll","OMEGA"/)
+  VAR = (/"U","U"/)
+  VAR = (/"OMEGA","OMEGA"/)
   varlev = (/22,19/) ;;23-1 And, 20-1 Him
   factor = secpday/100.
 
   manlevs = True
   mag = 1. ;;1.0 for F2000; 3.5 for FHS94 (default nu_div)
-  cmin = (/-150. /)*mag ;;-250.
-  cmax = (/ 150. /)*mag ;; 200.
-  cspc = (/   4. /)*mag ;;   4.5
+  cmin = (/-150. /)*mag ;;-150.
+  cmax = (/ 150. /)*mag ;; 150.
+  cspc = (/   2. /)*mag ;;   4.
 
   topolay = False ;;overlay topography
 	ktopo = (/29,29,29/)
@@ -46,20 +45,20 @@ begin
   transect = False ;;overlay transect
   streams = False ;;overlay streamline contours
   cellfill = True
-  circles = True
+  circles = False
 
   plabels = False
-  labels = new( (/2*nfiles/), string)
-  do i = 0,nfiles-1
+  labels = new( (/2*(nfiles+1)/), string)
+  do i = 0,nfiles-1+1
     labels(i) = "784 hPa"
-    labels(nfiles + i) = "524 hPa"
+    labels(nfiles + 1 + i) = "524 hPa"
   end do
 
   varNam = (/"~F33~w~F21~ (hPa/day)"/)
 
-  titles = (/"ne30np4-on-np4", \
-             "ne30pg3-on-np4", \
-             "ne30pg3-on-pg3"/)
+  titles = (/"ne30np4", \
+             "ne30pg3", \
+             "ne30pg3 - ne30np4"/)
 
   ;;;transect
   leftlat  = (/ -13., 10./);;;Andes opts =  -7.,   -31.5, -60.
@@ -74,25 +73,24 @@ begin
   lon2 = (/  50.,110./) ; 60.,120.
 
   if (latlon) then
-    LAT = (/"lat","lat","lat"/)
-    LON = (/"lon","lon","lon"/)
+    LAT = (/"lat","lat"/)
+    LON = (/"lon","lon"/)
   else
-    LAT = (/"lat","lat_d","lat"/)
-    LON = (/"lon","lon_d","lon"/)
+    LAT = (/"lat","lat"/)
+    LON = (/"lon","lon"/)
   end if
 
   writencdf = False
-  fname_out = "fhs-contours-h1.nc"
-  andnams = (/"and1","and2","and3"/)
-  hindnams = (/"hind1","hind2","hind3"/)
-  latnams = (/"lat1","lat2","lat3"/)
-  lonnams = (/"lon1","lon2","lon3"/)
+  fname_out = "fhs-contours.nc"
+  andnams = (/"and1","and3","and3"/)
+  hindnams = (/"hind1","hind3","hind3"/)
+  latnams = (/"lat1","lat3","lat3"/)
+  lonnams = (/"lon1","lon3","lon3"/)
 
-  loadncdf = False
-  fname_in = "fhs-contours-h1.nc"
+  loadncdf = True
+  fname_in = "fhs-contours.nc"
 
   sname = (/"ne30np4_091226_pentagons.nc", \
-	    "ne30np4_091226_pentagons.nc", \
 	    "ne30pg3_scrip_170611.nc"/)
 
   pltNam = "temp_cellfill"
@@ -103,14 +101,15 @@ begin
   wkstype = "pdf"
   wks = gsn_open_wks(wkstype,pltNam)
   gsn_define_colormap(wks,"BkBlAqGrYeOrReViWh200") ;;"3saw") ;;"BkBlAqGrYeOrReViWh200");;"gui_default");;"MPL_gist_rainbow")
-  ;gsn_define_colormap(wks,"MPL_hsv")
+  ;gsn_define_colormap(wks,"WhViBlGrYeOrRe")
+  ;gsn_define_colormap(wks,"MPL_gist_ncar")
   ;wkstype@wkBackgroundOpacityF    = 0.
   gsn_reverse_colormap(wks)
   setvalues NhlGetWorkspaceObjectId()
       "wsMaximumSize": 500000000
   end setvalues
 
-  plot = new( (/2*nfiles/), graphic)
+  plot = new( (/2*(nfiles+1)/), graphic)
    res             = True
    res@gsnMaximize = False
    res@gsnDraw     = False      ; Will draw later, after overlaying
@@ -143,6 +142,7 @@ begin
    res@cnLineLabelsOn       = False
    res@cnInfoLabelOn        = False
    res@lbLabelBarOn         = False
+   res@lbBoxSeparatorLinesOn = False
 
  if (cellfill) then
    res@cnFillMode = "CellFill"
@@ -203,7 +203,7 @@ begin
  print("begin case "+n)
 
 if (cellfill) then
- sf = addfile("/home/aherring/grids/" + sname(n),"r")
+ sf = addfile("/glade/work/aherring/grids/physgrids/SCRIP_files/" + sname(n),"r")
  latvert = sf->grid_corner_lat
  lonvert = sf->grid_corner_lon
  res@sfXCellBounds = lonvert
@@ -337,7 +337,7 @@ end if
  end if
 
  andind = n
- himind = nfiles + n
+ himind = (nfiles+1) + n
 
  ;;res@mpCenterLonF = -80.;-70.
  ;;res@mpCenterLatF = 0.;-20.
@@ -347,25 +347,27 @@ end if
  res@mpMinLatF = lat1(0)
  res@mpMaxLatF = lat1(1)
 
- ;;res@mpLambertParallel1F = lat1(0)
- ;;res@mpLambertParallel2F = lat1(1)
- ;;res@mpLambertMeridianF  = 0.5*(lon1(0) + lon1(1))
-
  plot(andind) = gsn_csm_contour_map(wks,bar1,res)
-
- ;;res@mpCenterLonF = 60.;80.
- ;;res@mpCenterLatF = 30.
 
  res@mpMinLonF = lon2(0)
  res@mpMaxLonF = lon2(1)
  res@mpMinLatF = lat2(0)
  res@mpMaxLatF = lat2(1)
 
- ;;res@mpLambertParallel1F = lat2(0)
- ;;res@mpLambertParallel2F = lat2(1)
- ;;res@mpLambertMeridianF  = 0.5*(lon2(0) + lon2(1))
-
+ res@lbLabelBarOn         = True
  plot(himind) = gsn_csm_contour_map(wks,bar2,res) 
+ res@lbLabelBarOn         = False
+
+ if (n.eq.0) then
+   BAR10 = bar1
+   BAR20 = bar2
+   ncol0 = dimsizes(bar1)
+ else if (n.eq.1) then
+   BAR11 = bar1
+   BAR21 = bar2
+   ncol1 = dimsizes(bar1)
+ end if
+ end if
 
  if (seover) then
   overlay_se_grid(wks,plot(andind))
@@ -450,15 +452,88 @@ end if
   txres = True
   txres@txFontHeightF = 0.012
   txres@txJust = "CenterLeft"
-  yy = (/ 0.915,0.915,0.915 /)
-  xx = (/ 0.045,0.377,0.71 /)
+  yy = (/ 0.875,0.875,0.875 /)
+  xx = (/ 0.045,0.377,0.710 /)
   gsn_text_ndc(wks,titles(n),xx(n),yy(n),txres)
 
 if (cellfill) then
   delete([/res@sfXCellBounds,res@sfYCellBounds/])
 end if
 
+  ;;;label bar label
+  ;;txres@txFontHeightF = 0.014
+  ;;txres@txJust = "CenterCenter"
+  ;;xl = (/0.51,
+  ;;yl = (/0.16,0.16,0.16/)
+  ;;gsn_text_ndc(wks,varNam,xl(n),yl(n),txres)
+
 end do ;nfiles
+
+;;;;Difference plot
+
+ andind = n
+ himind = nfiles + 1 + n
+
+if (.not.latlon) then
+ ;;;remap to latlon
+ ncol_d = 48602
+
+ wgtpath = get_wgt_path(ncol0,ncol_d,0)
+ bar10 = ESMF_regrid_with_weights(BAR10,wgtpath,False)
+ bar20 = ESMF_regrid_with_weights(BAR20,wgtpath,False)
+
+ wgtpath = get_wgt_path(ncol1,ncol_d,0)
+ bar11 = ESMF_regrid_with_weights(BAR11,wgtpath,False)
+ bar21 = ESMF_regrid_with_weights(BAR21,wgtpath,False)
+
+ diff1 = bar11 - bar10
+ diff2 = bar21 - bar20
+
+else
+
+ diff1 = BAR11 - BAR10
+ diff2 = BAR21 - BAR20
+
+end if
+
+ if (manlevs) then
+   res@cnMinLevelValF  = -80.
+   res@cnMaxLevelValF  =  80.
+   res@cnLevelSpacingF =   2.
+ end if
+
+ ;;;different color map
+ ;;cmap = read_colormap_file("BkBlAqGrYeOrReViWh200")
+ ;;delete([/cmap,res@cnFillPalette/]) 
+ res@gsnSpreadColors = False
+ cmap = read_colormap_file("WhViBlGrYeOrRe")
+ res@cnFillPalette = cmap(::-1,:)
+
+ sf = addfile("/glade/work/aherring/grids/grid_files/cnsrv/0703125deg-SCRIP.nc","r")
+ latvert = sf->grid_corner_lat
+ lonvert = sf->grid_corner_lon
+ res@sfXCellBounds = lonvert
+ res@sfYCellBounds = latvert
+ delete([/sf,latvert,lonvert/])
+
+ res@mpMinLonF = lon1(0)
+ res@mpMaxLonF = lon1(1)
+ res@mpMinLatF = lat1(0)
+ res@mpMaxLatF = lat1(1)
+
+ plot(andind) = gsn_csm_contour_map(wks,diff1,res)
+
+ res@mpMinLonF = lon2(0)
+ res@mpMaxLonF = lon2(1)
+ res@mpMinLatF = lat2(0)
+ res@mpMaxLatF = lat2(1)
+
+ res@lbLabelBarOn         = True
+ plot(himind) = gsn_csm_contour_map(wks,diff2,res)
+
+ txres@txJust = "CenterLeft"
+ txres@txFontHeightF = 0.012
+ gsn_text_ndc(wks,titles(n),xx(n),yy(n),txres)
 
 ;;;drawNDCGrid(wks)
 ;************************************************
@@ -475,7 +550,7 @@ end do ;nfiles
     resP@amJust           = "TopRight"
   ;;end if
 
-  resP@gsnPanelLabelBar = True
+  resP@gsnPanelLabelBar = False
   resP@lbTitleString              = varNam
   resP@lbTitlePosition            = "Bottom"
   resP@lbTitleFontHeightF         = 0.015
@@ -489,7 +564,7 @@ end do ;nfiles
   resP@gsnPanelBottom     = 0.1
   ;resP@gsnPanelRight     = 0.9007;
   ;resP@gsnPanelLeft     = 0.40        ; position of left most plot
-  gsn_panel(wks,plot,(/2,nfiles/),resP)      
+  gsn_panel(wks,plot,(/2,(nfiles+1)/),resP)      
 
 frame(wks)
 

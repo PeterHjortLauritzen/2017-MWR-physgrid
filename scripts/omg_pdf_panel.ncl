@@ -21,29 +21,31 @@ begin
   p0   = 100000.
 
   dir = "/glade2/scratch2/aherring/"
-  fname = (/"camtrunk_180208_QPC4_ne30_180302", \
+  fname = (/"camtrunk_180925_QPC4_ne30_180928", \
 	    "camtrunk_180208_QPC4_ne30pg3_180302"/)
-  fdate = ".cam.h1.*"
+  fdate = ".cam.h2.*"
   nfiles = dimsizes(fname)
 
   VAR = "OMEGA"
   onemnth = False
   regrid = False
   factor = 1.
+  nx = 3
 
   nbins  = 200
 
   optpdf          = True
-  optpdf@bin_min  = -2.5
+  optpdf@bin_min  = -3.0
   optpdf@bin_max  = 0.
   optpdf@bin_spacing = (optpdf@bin_max-optpdf@bin_min)/nbins
   xaxis = "~F33~w~F21~ (Pa/s)"
 
   writenetcdf = False
   loadncdf = True
-  fname_in = (/"ne30pdflowmem-nbins200.nc","ne30pg3_pdfxnbins200_new.nc"/)
-  varnams = (/"pdf1","pdf2","pdf3"/)
+  fname_in = (/"ne30pg3_pdf-nbins100_min30.nc","ne30pg3_pdf-nbins200_min30.nc"/)
+  varnams = (/"pdfC","pdfE","pdfM"/)
 
+  dopoly = False
 
   pltNam = "temp_pdf"
   colors = (/"red","green","blue","sienna1","deepskyblue","magenta","palegreen","yellow","darkorchid1"/)
@@ -95,19 +97,6 @@ begin
 do n = 0,nfiles-1
 
 print("Begin case "+n)
-
-if (n.eq.0) then
-  writenetcdf = False
-  loadncdf = True
-  nx = 3
-else if (n.eq.1) then
-  writenetcdf = False
-  loadncdf = True
-  nx = 3
-  varnams = (/"pdfC","pdfE","pdfM"/)
-
-end if
-end if
 
 if (.not.loadncdf) then
 
@@ -212,24 +201,29 @@ print("min bin " + pdfvar@bin_bound_min)
      ncdf = addfile(fname_in(n) , "r")
    end if
    pdfvar = ncdf->$varnams(m)$
-  end if
 
-  if (m.eq.0) then
-    pdfvar0 = pdfvar
-  else if (m.eq.1) then
-    diff = pdfvar - pdfvar0
-    print(max(diff))
-    print(min(diff))
-  end if
+   if (n.eq.0 .and. m.eq.0) then
+    pdfvar0 = ncdf->$varnams(0)$
+    pdfvar1 = ncdf->$varnams(1)$
+    pdfvar2 = ncdf->$varnams(2)$
+   else if (n.eq.1 .and. m.eq.0)
+    pdfvar3 = ncdf->$varnams(0)$
+    pdfvar4 = ncdf->$varnams(1)$
+    pdfvar5 = ncdf->$varnams(2)$
+   end if
+   end if
+
   end if
 
    if (n.eq.0) then
-     res@trYMinF                = 1.e-8
-     res@trXMinF                = -2.5
+     nbins = 100
+     res@trYMinF                = 2.e-8
+     res@trXMinF                = -2.5;;;
      res@trXMaxF                = 0.05
    else if (n.eq.1) then
-     res@trYMinF                = 1.e-8
-     res@trXMinF                = -2.5
+     nbins = 200
+     res@trYMinF                = 2.e-8
+     res@trXMinF                = -2.5;;;
      res@trXMaxF                = 0.05
    end if
    end if
@@ -243,14 +237,70 @@ print("min bin " + pdfvar@bin_bound_min)
      end if
      res@tiXAxisString          = xaxis
      plot(n)  = gsn_csm_xy(wks,xvals(pvals),pdfvar(pvals)*1.e-2,res)
-     delete(res@tiYAxisString)
    else 
      tmp = gsn_csm_xy(wks,xvals(pvals),pdfvar(pvals)*1.e-2,res)
      overlay(plot(n),tmp)
      delete(tmp)
+
    end if
    delete(pvals)
    delete(xvals)
+
+
+;;;
+   if (n.eq.1 .and. m.eq.2) then
+     res@xyCurveDrawOrder = "PreDraw"
+
+     ;;;Plot 2
+     nbins = 100
+     pvals0 = ind(pdfvar0.gt.0.d0)
+     xvals0 = pdfvar0@bin_bounds(0:nbins-1)
+
+     res@xyLineColors       = "grey50"
+     tmp = gsn_csm_xy(wks,xvals0(pvals0),pdfvar0(pvals0)*1.e-2,res)
+     overlay(plot(n),tmp)
+     delete(tmp)
+
+     pvals1 = ind(pdfvar1.gt.0.d0)
+     xvals1 = pdfvar1@bin_bounds(0:nbins-1)
+
+     tmp = gsn_csm_xy(wks,xvals1(pvals1),pdfvar1(pvals1)*1.e-2,res)
+     overlay(plot(n),tmp)
+     delete(tmp)
+
+     pvals2 = ind(pdfvar2.gt.0.d0)
+     xvals2 = pdfvar2@bin_bounds(0:nbins-1)
+
+     tmp = gsn_csm_xy(wks,xvals2(pvals2),pdfvar2(pvals2)*1.e-2,res)
+     overlay(plot(n),tmp)
+     delete(tmp)
+
+     ;;;Plot 1
+     nbins = 200
+     pvals3 = ind(pdfvar3.gt.0.d0)
+     xvals3 = pdfvar3@bin_bounds(0:nbins-1)
+
+     res@xyLineColors       = "grey50"
+     tmp = gsn_csm_xy(wks,xvals3(pvals3),pdfvar3(pvals3)*1.e-2,res)
+     overlay(plot(0),tmp)
+     delete(tmp)
+
+     pvals4 = ind(pdfvar4.gt.0.d0)
+     xvals4 = pdfvar4@bin_bounds(0:nbins-1)
+
+     tmp = gsn_csm_xy(wks,xvals4(pvals4),pdfvar4(pvals4)*1.e-2,res)
+     overlay(plot(0),tmp)
+     delete(tmp)
+
+     pvals5 = ind(pdfvar5.gt.0.d0)
+     xvals5 = pdfvar5@bin_bounds(0:nbins-1)
+
+     tmp = gsn_csm_xy(wks,xvals5(pvals5),pdfvar5(pvals5)*1.e-2,res)
+     overlay(plot(0),tmp)
+     delete(tmp)
+
+   end if
+;;;
 
    if (writenetcdf) then
      if (m.eq.0) then
@@ -286,6 +336,8 @@ end do ;nfiles
   ;;xx = (/0.825,0.86,0.92,0.825,0.86,0.92,0.825,0.86,0.92/)
   ;;yy = (/0.65,0.65,0.65,0.605,0.605,0.605,0.55,0.55,0.55/)
 
+ if (dopoly) then
+
   colors = (/"red","green","red","green","blue","green","red","green","red"/)
   colors4 = (/"red4","green4","red4","green4","blue4","green4","red4","green4","red4"/)
  
@@ -315,8 +367,7 @@ end do ;nfiles
   gsres                = True
   ;;gsres@gsFillOpacityF = 0.5
 
-  do m = 0,8;;;nx-1
-    print(m)
+  do m = 0,8
     gsres@gsFillColor    = colors(m)
     xbox = (/x0(m),x1(m),x2(m),x3(m),x4(m)/)+offx
     ybox = (/y0(m),y1(m),y2(m),y3(m),y4(m)/)+offy
@@ -428,6 +479,8 @@ end do ;nfiles
   xx = (/0.29-dgll/2.,0.44+dgll/2./)+offx
   yy = (/yc,yc/)+offy
   gsn_polyline_ndc(wks,xx,yy,res_lines)
+
+ end if
 
   resP                  = True                   ; modify the panel plot
   resP@gsnFrame         = False                  ; don't advance panel plot
